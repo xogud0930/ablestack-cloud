@@ -884,6 +884,11 @@ html.theme-refined body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
 
+  // modern.less drops antd's click focus halo; keep the segment's own shadow while focused
+  .ant-radio-group .ant-radio-button-wrapper-checked:not([class*='block-radio-button']):not(.ant-radio-button-wrapper-disabled):focus-within:not(:has(:focus-visible)) {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
   // overlays: blurred backdrop, translucent menus
   .ant-modal-mask {
     background: rgba(0, 0, 0, 0.28);

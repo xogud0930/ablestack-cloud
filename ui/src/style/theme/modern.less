@@ -671,6 +671,28 @@ html body {
     }
   }
 
+  // antd rings a radio button on any focus, so a mouse click leaves a halo; keep it for keyboard focus only
+  .ant-radio-group .ant-radio-button-wrapper:not([class*='block-radio-button']):not(.ant-radio-button-wrapper-disabled):focus-within:not(:has(:focus-visible)) {
+    box-shadow: none;
+  }
+
+  // an empty table's "no data" row is not a row to hover (vars.less tints every hovered row with !important)
+  .ant-table .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+    background: transparent !important;
+  }
+
+  // disabled radios / checkboxes: dark mode kept a bright outline that read as selectable
+  .ant-radio-wrapper-disabled,
+  .ant-checkbox-wrapper-disabled {
+    color: var(--ui-text-muted);
+  }
+
+  .ant-radio-disabled .ant-radio-inner,
+  .ant-checkbox-disabled .ant-checkbox-inner {
+    background: var(--ui-bg-disabled);
+    border-color: var(--ui-border) !important;
+  }
+
   // antd shades the fixed-header scrollbar gutter with a light 1px shadow (a white line in dark mode)
   .ant-table-thead > tr > th.ant-table-cell-scrollbar {
     box-shadow: none;
