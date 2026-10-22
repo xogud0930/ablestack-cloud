@@ -530,6 +530,13 @@ export default {
   // the empty placeholder is a single centered row; antd would still offer a horizontal scrollbar for scroll.x
   &.is-empty .ant-table-body { overflow-x: hidden !important; }
 
+  // the placeholder row fills the body so the empty message stays centered as the panel is resized
+  // (specific enough to beat the 30px compact row height below)
+  &.is-empty .bottom-activity-panel__table .ant-table-tbody > tr.ant-table-placeholder > td { height: var(--activity-table-body-height); }
+
+  // antd's 32px empty-state margins alone are taller than the default 126px body
+  &.is-empty .ant-empty { margin: 0; }
+
   // before the first response the table is loading, not empty
   .ant-spin-blur .ant-table-placeholder .ant-empty { visibility: hidden; }
 
