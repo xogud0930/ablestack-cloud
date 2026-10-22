@@ -4314,7 +4314,10 @@ export default {
         this.templateLicenses = this.fetchTemplateLicenses(this.template)
         this.templateProperties = this.fetchTemplateProperties(this.template)
         this.selectedTemplateConfiguration = {}
+        const template = this.template
         setTimeout(() => {
+          // the template can be cleared or replaced (image type / selection change) before this runs
+          if (this.template !== template) return
           if (this.templateConfigurationExists || this.template.templatetag) {
             this.selectedTemplateConfiguration = this.templateConfigurationExists ? this.templateConfigurations[0] : {}
             this.handleTemplateConfiguration()
