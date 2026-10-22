@@ -29,6 +29,76 @@ html body {
     border-radius: 10px;
   }
 
+  // Wall availability notice: a slim, closable line rather than a full alert block
+  // breathing room from the window's top edge
+  .auto-alert-banner-container .banner-list {
+    padding: 8px 8px 6px;
+  }
+
+  // :not(.ant-alert-banner) matches refined.less's alert padding rule so this one wins
+  .auto-alert-banner-container .wall-notice.ant-alert:not(.ant-alert-banner) {
+    align-items: center;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+
+    .ant-alert-message {
+      color: var(--ui-text-secondary);
+    }
+
+    .ant-alert-icon {
+      margin-right: 8px;
+      font-size: 13px;
+    }
+
+    .ant-alert-close-icon {
+      margin-left: 12px;
+      font-size: 11px;
+    }
+  }
+
+  // folded notice: a small tab hanging from the top edge, above the header, taking no layout height
+  .wall-notice-tab {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 2147483647;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    height: 28px;
+    padding: 0 14px;
+    color: var(--ui-text-secondary);
+    font-size: 12px;
+    background: var(--ui-bg-surface);
+    border: 1px solid var(--ui-border);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    transform: translateX(-50%);
+    cursor: pointer;
+
+    > .anticon:first-child {
+      color: var(--ui-info-icon);
+    }
+
+    &:hover {
+      color: var(--ui-text-primary);
+    }
+  }
+
+  .wall-notice-tab__chevron {
+    font-size: 10px;
+  }
+
+  .wall-notice__state {
+    margin: 0 0 0 6px;
+    padding: 0 6px;
+    font-size: 11px;
+    line-height: 18px;
+    border-radius: 4px;
+  }
+
   // sidebar
   // only the sider paints; inner layers stay transparent so the column is one color in both modes
   .sider.light {

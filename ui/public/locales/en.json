@@ -8209,6 +8209,8 @@
   "message.vbmc.Removing": "Cleaning up the endpoint and access rules on its original host.",
   "message.vbmc.CleanupRequired": "The port remains reserved. Check host connectivity and retry cleanup. Legacy allocations may require administrator cleanup.",
   "message.wall.availability.unavailable": "Wall monitoring is unavailable. Alerts may be outdated; Mold remains available.",
+  "label.wall.notice.fold": "Fold",
+  "label.wall.notice.unfold": "Unfold",
   "label.wall.availability.Disabled": "Disabled",
   "label.wall.availability.NotConfigured": "Not configured",
   "label.wall.availability.Unavailable": "Unavailable",

@@ -26,9 +26,19 @@
       <div class="banner-list" ref="listRef">
         <a-alert
           v-if="wallState !== 'Ready'"
+          class="wall-notice"
           type="info"
           show-icon
-          :message="$t('message.wall.availability.unavailable') + ' ' + $t('label.wall.availability.' + wallState)" />
+          closable
+          @close="dismissWallNotice">
+          <template #message>
+            {{ $t('message.wall.availability.unavailable') }}
+            <a-tag class="wall-notice__state">{{ $t('label.wall.availability.' + wallState) }}</a-tag>
+          </template>
+          <template #closeIcon>
+            <up-outlined :title="$t('label.wall.notice.fold')" />
+          </template>
+        </a-alert>
         <a-alert
           v-if="wallState === 'Ready'"
           class="alert-summary"
@@ -90,6 +100,18 @@
         </a-alert>
       </div>
     </div>
+
+    <!-- folded Wall notice: a small tab on the top edge that unfolds it again -->
+    <button
+      v-if="wallNoticeFolded"
+      type="button"
+      class="wall-notice-tab"
+      :title="$t('label.wall.notice.unfold') + ' · ' + $t('message.wall.availability.unavailable')"
+      @click="expandWallNotice">
+      <info-circle-filled />
+      <span>Wall · {{ $t('label.wall.availability.' + wallState) }}</span>
+      <down-outlined class="wall-notice-tab__chevron" />
+    </button>
 
     <!-- AlertListDrawer -->
     <a-drawer
@@ -676,7 +698,7 @@ import {
   nextTick,
   getCurrentInstance
 } from 'vue'
-import { ExclamationCircleFilled, SoundOutlined, PauseCircleOutlined, LinkOutlined, CloseOutlined } from '@ant-design/icons-vue'
+import { ExclamationCircleFilled, SoundOutlined, PauseCircleOutlined, LinkOutlined, CloseOutlined, UpOutlined, DownOutlined, InfoCircleFilled } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { getAPI as requestAPI } from '@/api'
 import store from '@/store'
@@ -693,6 +715,9 @@ export default {
     PauseCircleOutlined,
     LinkOutlined,
     CloseOutlined,
+    UpOutlined,
+    DownOutlined,
+    InfoCircleFilled,
     RuleSilenceModal: defineAsyncComponent(() => import('@/views/infra/RuleSilenceModal.vue')),
     RulePauseModal: defineAsyncComponent(() => import('@/views/infra/RulePauseModal.vue'))
   },
@@ -864,6 +889,16 @@ export default {
     const current = () => !disposed && generation === store.state.user.discoveryGeneration
     const allowed = name => current() && hasDiscoveryApi(store.getters.apis, name)
     const wallState = ref('Unknown')
+    // the availability notice folds into a small tab for this session; it unfolds again when the state changes
+    const WALL_NOTICE_KEY = 'autoAlertBanner.wallNoticeDismissed'
+    const wallNoticeDismissed = ref((() => { try { return sessionStorage.getItem(WALL_NOTICE_KEY) || '' } catch (_) { return '' } })())
+    const setWallNoticeDismissed = (value) => {
+      wallNoticeDismissed.value = value
+      try { sessionStorage.setItem(WALL_NOTICE_KEY, value) } catch (_) {}
+    }
+    const dismissWallNotice = () => setWallNoticeDismissed(wallState.value)
+    const expandWallNotice = () => setWallNoticeDismissed('')
+    const wallNoticeFolded = computed(() => !['Ready', 'Unknown'].includes(wallState.value) && wallNoticeDismissed.value === wallState.value)
     const wallGate = createWallGate((name) => {
       if (!allowed(name)) return Promise.resolve({})
       return requestAPI(name, {}, { optionalDiscovery: true })
@@ -2578,7 +2613,7 @@ export default {
     })
 
     const showBanner = computed(() => {
-      if (wallState.value !== 'Ready') return wallState.value !== 'Unknown'
+      if (wallState.value !== 'Ready') return wallState.value !== 'Unknown' && wallNoticeDismissed.value !== wallState.value
       const hasList = Array.isArray(visibleAlerts.value) && visibleAlerts.value.length > 0
       return (keepShowing.value || remoteSilencedLoaded.value) && hasList
     })
@@ -2959,6 +2994,9 @@ export default {
     // ===== 노출 =====
     return {
       wallState,
+      dismissWallNotice,
+      expandWallNotice,
+      wallNoticeFolded,
       drawerVisible,
       drawerListRef,
       listRef,
