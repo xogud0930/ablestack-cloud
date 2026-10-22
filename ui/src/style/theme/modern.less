@@ -275,6 +275,53 @@ html body {
       }
     }
 
+    // alert / event feeds: the header stays put and only the list scrolls
+    .dashboard-event > .ant-card-body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > .chart-card-content,
+      > .chart-card-content > .chart-card-content-fix {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      > .chart-card-footer:empty,
+      > .chart-card-footer .chart-card-field:empty {
+        display: none;
+      }
+    }
+
+    .dashboard-event .dashboard-feed {
+      flex: 1;
+      min-height: 0;
+      margin-right: -12px;
+      padding-right: 12px;
+      overflow-y: auto;
+      // items fade out at the edges instead of being cut flat under the header
+      mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 16px), transparent 100%);
+    }
+
+    .dashboard-feed-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      color: var(--ui-text-muted);
+      font-size: 12px;
+      font-weight: 500;
+
+      .anticon {
+        font-size: 10px;
+      }
+
+      &:hover {
+        color: var(--ui-link);
+      }
+    }
+
     .chart-card-title {
       display: block;
       padding-bottom: 12px;

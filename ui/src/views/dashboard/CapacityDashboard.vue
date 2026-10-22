@@ -278,23 +278,11 @@
             <flag-outlined />
             {{ $t('label.alerts') }}
           </h3>
+          <router-link class="dashboard-feed-more" :to="{ path: '/alert' }">
+            {{ $t('label.view.all') }} <right-outlined />
+          </router-link>
         </div>
-        <a-divider style="margin: 6px 0px; border-width: 0px"/>
-        <a-timeline>
-          <a-timeline-item
-            v-for="alert in alerts"
-            :key="alert.id"
-            color="red">
-            <span :style="{ color: '#999' }"><small>{{ $toLocaleDate(alert.sent) }}</small></span>&nbsp;
-            <span :style="{ color: '#666' }"><small><router-link :to="{ path: '/alert/' + alert.id }">{{ alert.name }}</router-link></small></span><br/>
-            <span :style="{ color: '#aaa' }">{{ alert.description }}</span>
-          </a-timeline-item>
-        </a-timeline>
-        <router-link :to="{ path: '/alert' }">
-          <a-button>
-            {{ $t('label.view') }} {{ $t('label.alerts') }}
-          </a-button>
-        </router-link>
+        <dashboard-feed kind="alert" :items="alerts" />
       </a-card>
       </router-link>
     </a-col>
@@ -306,26 +294,11 @@
             <schedule-outlined />
             {{ $t('label.events') }}
           </h3>
+          <router-link class="dashboard-feed-more" :to="{ path: '/event' }">
+            {{ $t('label.view.all') }} <right-outlined />
+          </router-link>
         </div>
-        <a-divider style="margin: 6px 0px; border-width: 0px"/>
-        <a-timeline>
-          <a-timeline-item
-            v-for="event in events"
-            :key="event.id"
-            :color="getEventColour(event)">
-            <span :style="{ color: '#999' }"><small>{{ $toLocaleDate(event.created) }}</small></span>&nbsp;
-            <span :style="{ color: '#666' }"><small><router-link :to="{ path: '/event/' + event.id }">{{ event.type }}</router-link></small></span><br/>
-            <span>
-              <resource-label :resourceType="event.resourcetype" :resourceId="event.resourceid" :resourceName="event.resourcename" />
-            </span>
-            <span :style="{ color: '#aaa' }">({{ event.username }}) {{ event.description }}</span>
-          </a-timeline-item>
-        </a-timeline>
-        <router-link :to="{ path: '/event' }">
-          <a-button>
-            {{ $t('label.view') }} {{ $t('label.events') }}
-          </a-button>
-        </router-link>
+        <dashboard-feed kind="event" :items="events" />
       </a-card>
       </router-link>
     </a-col>
@@ -337,16 +310,18 @@ import dashboardReadMixin from '@/utils/dashboardReadMixin'
 
 import ResourceIcon from '@/components/view/ResourceIcon'
 import ChartCard from '@/components/widgets/ChartCard'
-import ResourceLabel from '@/components/widgets/ResourceLabel'
+import DashboardFeed from '@/components/widgets/DashboardFeed'
 import Status from '@/components/widgets/Status'
+import { RightOutlined } from '@ant-design/icons-vue'
 
 export default {
   name: 'CapacityDashboard',
   mixins: [dashboardReadMixin],
   components: {
     ChartCard,
+    DashboardFeed,
     ResourceIcon,
-    ResourceLabel,
+    RightOutlined,
     Status
   },
   data () {
@@ -598,22 +573,6 @@ export default {
           this.events = json.listeventsresponse.event
         }
       })
-    },
-    getEventColour (event) {
-      if (event.level === 'ERROR') {
-        return 'red'
-      }
-      if (event.state === 'Completed') {
-        return 'green'
-      }
-      return 'blue'
-    },
-    getAlertColour (alert) {
-      const alertText = alert.description.toLowerCase()
-      if (alertText.includes('fail') || alertText.includes('error')) {
-        return 'red'
-      }
-      return 'blue'
     },
     listZones () {
       this.readDashboard('listZones', { showicon: true }, json => {
