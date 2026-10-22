@@ -42,7 +42,7 @@
         <template v-if="isSideMenu()">
           <a-drawer
             v-if="isMobile()"
-            :wrapClassName="'drawer-sider ' + navTheme"
+            :wrapClassName="'drawer-sider ' + siderTheme"
             :closable="false"
             :visible="collapsed"
             placement="left"
@@ -50,7 +50,7 @@
           >
             <side-menu
               :menus="menus"
-              :theme="navTheme"
+              :theme="siderTheme"
               :collapsed="false"
               :collapsible="true"
               mode="inline"
@@ -62,7 +62,7 @@
             v-else
             mode="inline"
             :menus="menus"
-            :theme="navTheme"
+            :theme="siderTheme"
             :collapsed="collapsed"
             :collapsible="true"
           />
@@ -71,7 +71,7 @@
         <template v-else>
           <a-drawer
             v-if="isMobile()"
-            :wrapClassName="'drawer-sider ' + navTheme"
+            :wrapClassName="'drawer-sider ' + siderTheme"
             placement="left"
             @close="() => (collapsed = false)"
             :closable="false"
@@ -79,7 +79,7 @@
           >
             <side-menu
               :menus="menus"
-              :theme="navTheme"
+              :theme="siderTheme"
               :collapsed="false"
               :collapsible="true"
               mode="inline"
@@ -204,6 +204,11 @@ export default {
     }
   },
   computed: {
+    // project context used to switch the sider to antd's dark menu; the redesigned sider keeps one
+    // style and the header project selector shows the context instead
+    siderTheme () {
+      return 'light'
+    },
     canDiscoverWallAlerts () { return hasDiscoveryApi(this.$store.getters.apis, 'getWallAlertAvailability') },
     ...mapState({
       mainMenu: state => state.permission.addRouters

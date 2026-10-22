@@ -64,17 +64,14 @@ export default {
   },
   data () {
     return {
-      logoPath: (this.$store.getters.darkMode || this.$store.getters.theme === 'dark') ? this.$config.whiteLogo : this.$config.logo
+      logoPath: this.$store.getters.darkMode ? this.$config.whiteLogo : this.$config.logo
     }
   },
   watch: {
-    '$store.getters.theme' (theme) {
-      this.logoPath = (this.$store.getters.darkMode || theme === 'dark') ? this.$config.whiteLogo : this.$config.logo
-    },
     '$store.getters.darkMode' (darkMode) {
       document.body.classList.toggle('dark-mode', darkMode)
       document.documentElement.classList.toggle('dark-mode', darkMode)
-      this.logoPath = (darkMode || this.$store.getters.theme === 'dark') ? this.$config.whiteLogo : this.$config.logo
+      this.logoPath = darkMode ? this.$config.whiteLogo : this.$config.logo
     }
   },
   mounted () {
