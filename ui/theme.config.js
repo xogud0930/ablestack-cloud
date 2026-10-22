@@ -61,7 +61,8 @@ const options = {
   lessUrl: 'js/less.min.js',
   indexFileName: 'index.html',
   publicPath: '.',
-  generateOnce: false
+  // regenerating color.less on every dev rebuild re-parses all of src/style and exhausts the heap; a build only emits once anyway
+  generateOnce: true
 }
 
 const createThemeColorReplacerPlugin = () => new AntDesignThemePlugin(options)
