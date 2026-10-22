@@ -294,6 +294,7 @@ export default {
     this.showClear = !!(n && n > 0)
   },
   beforeUnmount () {
+    clearTimeout(this.affixResizeTimer)
     this.stopShutdownPolling()
     window.removeEventListener('auto-alert-banner:height', this.onAutoBannerHeight)
     window.removeEventListener('resize', this.onResize)
@@ -362,6 +363,11 @@ export default {
       this.combinedBannerHeight = next
       this.$store.commit('SET_BANNER_HEIGHT', next)
       this.updateAffixTopVars()
+      // page toolbars (<a-affix>) only re-measure on window resize; fire it once the new layout is in place,
+      // otherwise a folded / unfolded banner leaves them pinned for the old header position
+      // (the affix also reacts to its offsetTop prop changing, measuring before the header has moved)
+      clearTimeout(this.affixResizeTimer)
+      this.affixResizeTimer = setTimeout(() => triggerWindowResizeEvent(), 120)
     },
     updateAffixTopVars () {
       const root = document.documentElement
