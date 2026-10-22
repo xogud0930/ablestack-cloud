@@ -17,7 +17,7 @@
 
 <template>
   <a-layout-sider
-    :class="['sider', isDesktop() ? null : 'shadow', theme, fixSiderbar ? 'ant-fixed-sidemenu' : null ]"
+    :class="['sider', isDesktop() ? null : 'shadow', theme, fixSiderbar ? 'ant-fixed-sidemenu' : null, { 'is-menu-scrolled': menuScrolled } ]"
     width="256px"
     collapsible
     v-model:collapsed="isCollapsed"
@@ -69,6 +69,11 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      menuScrolled: false
+    }
+  },
   computed: {
     isCollapsed () {
       return this.collapsed
@@ -81,13 +86,19 @@ export default {
   },
   mounted () {
     this.revealSelected()
+    this.menuEl = this.$el && this.$el.querySelector && this.$el.querySelector('.ant-menu-root')
+    if (this.menuEl) this.menuEl.addEventListener('scroll', this.onMenuScroll, { passive: true })
   },
   beforeUnmount () {
     clearTimeout(this.revealTimer)
+    if (this.menuEl) this.menuEl.removeEventListener('scroll', this.onMenuScroll)
   },
   methods: {
     onSelect (obj) {
       this.$emit('menuSelect', obj)
+    },
+    onMenuScroll () {
+      this.menuScrolled = this.menuEl.scrollTop > 0
     },
     // the menu scrolls on its own; keep the current page's item in view once its submenu has opened
     revealSelected () {

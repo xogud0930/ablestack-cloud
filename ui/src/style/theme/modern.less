@@ -148,6 +148,17 @@ html body {
     }
   }
 
+  // once the menu has scrolled, a hairline under the logo marks where the list slides under it
+  .sider .ant-layout-sider-children > :not(.ant-menu) {
+    position: relative;
+    z-index: 1;
+    transition: box-shadow 0.15s;
+  }
+
+  .sider.is-menu-scrolled .ant-layout-sider-children > :not(.ant-menu) {
+    box-shadow: 0 1px 0 var(--ui-border), 0 6px 12px -8px rgba(15, 23, 42, 0.18);
+  }
+
   .sider.light .ant-menu-inline,
   .sider.light .ant-menu-vertical {
     border-right: 0;
@@ -214,8 +225,20 @@ html body {
     }
   }
 
+  // collapsed sider flyouts appear in place: the zoom-in replayed on every quick hover and looked jumpy
+  .ant-menu-submenu-popup[class*='zoom-big'],
+  .ant-menu-inline-collapsed-tooltip[class*='zoom-big'] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
   // collapsed sider: a single item's hover label is a one-row version of the submenu popup below
   .ant-menu-inline-collapsed-tooltip {
+    // same left edge as the submenu popup (antd pads right-placed tooltips 8px for the arrow)
+    left: 88px !important;
+    padding-left: 0;
+
     .ant-tooltip-arrow {
       display: none;
     }
