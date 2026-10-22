@@ -3321,7 +3321,9 @@ export default {
   position: sticky;
   bottom: 0;
   z-index: 3;
-  margin: 0 -24px;
+  /* -10px cancels the wrapper's bottom margin, so the bar's resting place at the end of the list
+     matches where it sticks and it does not shift 10px as the scroll reaches the end */
+  margin: 0 -24px -10px;
   padding: 10px 24px;
   background: var(--ui-bg-page);
   /* also covers the scroll area's 16px bottom padding, where rows would otherwise show below the bar */

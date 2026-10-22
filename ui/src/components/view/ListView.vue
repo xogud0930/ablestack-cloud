@@ -1394,7 +1394,7 @@ export default {
     // beyond the sum of header widths the table scrolls sideways instead of squeezing columns
     tableScrollX () {
       if (['autoscalevmgroup', 'affinitygroup'].includes(this.$route.name)) return 980
-      return this.tableColumns.reduce((sum, col) => sum + (Number(col.width) || this.headerMinWidth(col)), 30)
+      return this.tableColumns.reduce((sum, col) => sum + (Number(col.width) || this.headerMinWidth(col)), 32)
     },
     tableSticky () {
       return {
@@ -1463,14 +1463,16 @@ export default {
   methods: {
     headerMinWidth (col) {
       const title = typeof col.title === 'string' ? col.title : ''
-      if (!title) return 80
-      if (!headerMeasureContext) {
-        headerMeasureContext = document.createElement('canvas').getContext('2d')
-        headerMeasureContext.font = `600 13px ${getComputedStyle(document.body).fontFamily}`
-      }
-      // cell padding 16px each side, plus the sort arrows
-      const width = Math.ceil(headerMeasureContext.measureText(title).width) + 32 + (col.sorter ? 24 : 0)
-      return Math.max(80, width)
+      if (!title) return 64
+      if (!headerMeasureContext) headerMeasureContext = document.createElement('canvas').getContext('2d')
+      // use the rendered header font (12px refined, 13px modern) once a header exists
+      // (the computed `font` shorthand is empty in Chrome, so build it from the longhands)
+      const th = this.$refs.tableWrapper?.querySelector('.ant-table-thead th')
+      const style = th ? getComputedStyle(th) : null
+      headerMeasureContext.font = style ? `${style.fontWeight} ${style.fontSize} ${style.fontFamily}` : `600 13px ${getComputedStyle(document.body).fontFamily}`
+      // 8px cell padding each side, plus 15px for the sort arrows and their gap
+      const width = Math.ceil(headerMeasureContext.measureText(title).width) + 16 + (col.sorter ? 15 : 0) + 2
+      return Math.max(64, width)
     },
     // the header sticks under the pinned toolbar and the horizontal scrollbar above the pinned pagination
     updateStickyOffsets () {
