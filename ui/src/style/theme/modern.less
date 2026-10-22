@@ -641,6 +641,45 @@ html body {
     border-radius: 10px;
     box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   }
+
+  // block radio options (deploy VM zone / OS ...): bordered option cards with an accent when picked,
+  // instead of the segmented-control look plain radio buttons get
+  .ant-radio-group .ant-radio-button-wrapper:is(.square-block-radio-button, .large-block-radio-button, .medium-block-radio-button, .small-block-radio-button) {
+    color: var(--ui-text-secondary);
+    background: var(--ui-bg-surface);
+    // the template sets border-width: 2px inline
+    border: 1px solid var(--ui-border) !important;
+    border-radius: 12px !important;
+    box-shadow: none;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+
+    &::before {
+      display: none !important;
+    }
+
+    &:hover {
+      color: var(--ui-text-primary);
+      border-color: var(--ui-border-strong) !important;
+    }
+
+    &.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+      color: var(--ui-text-primary);
+      font-weight: 600;
+      background: fade(@modern-primary, 8%);
+      border-color: @modern-primary !important;
+      box-shadow: inset 0 0 0 1px @modern-primary;
+    }
+  }
+
+  // antd shades the fixed-header scrollbar gutter with a light 1px shadow (a white line in dark mode)
+  .ant-table-thead > tr > th.ant-table-cell-scrollbar {
+    box-shadow: none;
+  }
+
+  // deploy VM: room between the numbered sections
+  .deploy-vm-form-scroll .ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
+    padding-bottom: 28px;
+  }
 }
 
 // dark mode: the light-mode 10% primary tint is too faint on dark surfaces

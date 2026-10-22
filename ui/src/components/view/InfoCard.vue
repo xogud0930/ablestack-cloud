@@ -1773,7 +1773,9 @@ export default {
 }
 .resource-detail-item {
   margin-bottom: 20px;
-  word-break: break-all;
+  /* break long names between words; anywhere only for unbreakable ids */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 
   &__details {
     display: flex;
