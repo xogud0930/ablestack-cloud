@@ -53,6 +53,10 @@
       @click="handleDeployBtn">
       {{ deployButtonText }}
     </a-button>
+    <div v-if="disabled && disabledReason && !loading" class="deploy-blocked-reason">
+      <info-circle-outlined />
+      <span>{{ disabledReason }}</span>
+    </div>
   </div>
 </template>
 
@@ -63,6 +67,8 @@ export default {
   },
   props: {
     disabled: { type: Boolean, default: false },
+    // why the deploy button is disabled, shown under the buttons
+    disabledReason: { type: String, default: '' },
     loading: {
       type: Boolean,
       default: false
@@ -109,6 +115,30 @@ export default {
   .equal-size-button {
     flex-grow: 1; /* Make each button grow equally */
     min-width: 120px; /* Set a minimum width so that the buttons don't shrink too much */
+  }
+
+  /* split deploy button: keep the menu arrow visibly apart from the main action */
+  .equal-size-button.ant-btn-group {
+    gap: 6px;
+
+    > :deep(.ant-btn) {
+      border-radius: 8px !important;
+    }
+  }
+
+  .deploy-blocked-reason {
+    display: flex;
+    flex-basis: 100%;
+    gap: 6px;
+    align-items: baseline;
+    color: var(--ui-text-secondary, rgba(0, 0, 0, 0.65));
+    font-size: 12px;
+    line-height: 1.5;
+
+    .anticon {
+      flex: none;
+      color: var(--ui-warning-icon, #faad14);
+    }
   }
 
   @media (max-width: 600px) {

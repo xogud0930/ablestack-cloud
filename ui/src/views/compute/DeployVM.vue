@@ -950,7 +950,8 @@
                               </a-table>
                             </a-input-group>
                           </div>
-                        </div><br/><br/>
+                        </div>
+                        <template v-if="(template && template.userdataid) || (iso && iso.userdataid)"><br/><br/></template>
                         <div v-if="userdataDefaultOverridePolicy === 'ALLOWOVERRIDE' || userdataDefaultOverridePolicy === 'APPEND' || !userdataDefaultOverridePolicy">
                           <span v-if="userdataDefaultOverridePolicy === 'ALLOWOVERRIDE'" >
                             {{ $t('label.user.data.do.override') }}
@@ -963,7 +964,7 @@
                           <a-step
                             :status="zoneSelected ? 'process' : 'wait'">
                             <template #description>
-                              <div v-if="doUserdataOverride || doUserdataAppend || !userdataDefaultOverridePolicy" style="margin-top: 15px">
+                              <div v-if="doUserdataOverride || doUserdataAppend || !userdataDefaultOverridePolicy" :style="userdataDefaultOverridePolicy ? 'margin-top: 15px' : ''">
                                 <a-card
                                   :tabList="userdataTabList"
                                   :activeTabKey="userdataTabKey"
@@ -1161,7 +1162,8 @@
             <div class="card-footer" v-if="isMobile()">
               <deploy-buttons
                 :loading="loading.deploy"
-                :disabled="diskPlanIncomplete || userDataSelectionBlocked"
+                :disabled="!!deployBlockedReason"
+                :disabledReason="deployBlockedReason"
                 :deployButtonText="form.startvm ? $t('label.launch.vm') : $t('label.create.vm')"
                 :deployButtonMenuOptions="deployMenuOptions"
                 @handle-cancel="() => $router.back()"
@@ -1186,7 +1188,8 @@
             <template #footer-content>
               <deploy-buttons
                 :loading="loading.deploy"
-                :disabled="diskPlanIncomplete || userDataSelectionBlocked"
+                :disabled="!!deployBlockedReason"
+                :disabledReason="deployBlockedReason"
                 :deployButtonText="form.startvm ? $t('label.launch.vm') : $t('label.create.vm')"
                 :deployButtonMenuOptions="deployMenuOptions"
                 @handle-cancel="() => $router.back()"
@@ -1605,24 +1608,35 @@ export default {
         networkIds: this.form.networkids || []
       })
     },
-    diskPlanIncomplete () {
-      if (this.additionalIsoConfigDriveConflict) return true
+    // first unmet disk / source requirement, as the message shown under the deploy button
+    diskPlanIssue () {
+      if (this.additionalIsoConfigDriveConflict) return 'message.vm.deploy.blocked.iso'
+      const dataDiskInvalid = !!this.selectedDataDiskOffering?.id && (!(this.selectedDataDiskSize > 0) ||
+        !Number.isSafeInteger(this.selectedDataDiskCount) || this.selectedDataDiskCount < 1)
       if (this.isCreationSource) {
-        return !this.creationSourceOwnerReady || !this.selectedCreationSource?.allowed || this.sourceLoading || this.sourceOperationPending ||
-          (this.storageSelectionEnabled && this.rootStorageSelection.valid === false) ||
-          (!!this.selectedDataDiskOffering?.id && (!(this.selectedDataDiskSize > 0) ||
-            !Number.isSafeInteger(this.selectedDataDiskCount) || this.selectedDataDiskCount < 1 ||
-            (this.storageSelectionEnabled && this.dataStorageSelection.valid === false)))
+        if (!this.creationSourceOwnerReady || !this.selectedCreationSource?.allowed || this.sourceLoading || this.sourceOperationPending) return 'message.vm.deploy.blocked.source'
+        if (this.storageSelectionEnabled && this.rootStorageSelection.valid === false) return 'message.vm.deploy.blocked.storage'
+        if (dataDiskInvalid) return 'message.vm.deploy.blocked.datadisk'
+        if (this.selectedDataDiskOffering?.id && this.storageSelectionEnabled && this.dataStorageSelection.valid === false) return 'message.vm.deploy.blocked.storage'
+        return ''
       }
-      if (!['templateid', 'isoid'].includes(this.imageType) || this.template?.deployasis) return false
-      if (this.imageType === 'isoid' && (!this.diskOffering?.id || !(this.selectedRootDiskSize > 0))) return true
+      if (!['templateid', 'isoid'].includes(this.imageType) || this.template?.deployasis) return ''
+      if (this.imageType === 'isoid' && (!this.diskOffering?.id || !(this.selectedRootDiskSize > 0))) return 'message.vm.deploy.blocked.rootdisk'
       if (this.imageType === 'templateid' && this.showOverrideDiskOfferingOption &&
-        (!this.overrideDiskOffering?.id || this.overrideDiskOffering.iscustomized && !(this.selectedRootDiskSize > 0))) return true
-      if (this.showRootDiskSizeChanger && !(Number(this.form.rootdisksize) > 0)) return true
-      if (this.selectedDataDiskOffering?.id && (!(this.selectedDataDiskSize > 0) || !Number.isSafeInteger(this.selectedDataDiskCount) ||
-        this.selectedDataDiskCount < 1 || this.isoDataDiskSelection.invalid)) return true
-      return this.storageSelectionEnabled && (this.rootStorageSelection.valid === false ||
-        !!this.selectedDataDiskOffering?.id && this.dataStorageSelection.valid === false)
+        (!this.overrideDiskOffering?.id || this.overrideDiskOffering.iscustomized && !(this.selectedRootDiskSize > 0))) return 'message.vm.deploy.blocked.rootdisk'
+      if (this.showRootDiskSizeChanger && !(Number(this.form.rootdisksize) > 0)) return 'message.vm.deploy.blocked.rootdisk'
+      if (dataDiskInvalid || (this.selectedDataDiskOffering?.id && this.isoDataDiskSelection.invalid)) return 'message.vm.deploy.blocked.datadisk'
+      if (this.storageSelectionEnabled && (this.rootStorageSelection.valid === false ||
+        !!this.selectedDataDiskOffering?.id && this.dataStorageSelection.valid === false)) return 'message.vm.deploy.blocked.storage'
+      return ''
+    },
+    // the user data selector only mounts (and reports ready) in advanced mode; without it nothing is sent
+    userDataBlocksDeploy () {
+      return this.showDetails && this.zoneSelected && this.userDataSelectionBlocked
+    },
+    deployBlockedReason () {
+      if (this.diskPlanIssue) return this.$t(this.diskPlanIssue)
+      return this.userDataBlocksDeploy ? this.$t('message.vm.deploy.blocked.userdata') : ''
     },
     defaultRootOfferingName () {
       const offering = this.options.diskOfferings.find(item => item.id === this.serviceOffering?.diskofferingid)
@@ -3050,7 +3064,7 @@ export default {
     },
     handleSubmit (e) {
       console.log('wizard submit')
-      if (this.loading.deploy || this.userDataSelectionBlocked) return
+      if (this.loading.deploy || this.deployBlockedReason) return
       this.formRef.value.validate().then(async () => {
         const values = toRaw(this.form)
         const ownerKey = vmGroupOwnerKey(this.owner)
@@ -4580,14 +4594,19 @@ export default {
         min-height: 0;
       }
 
+      // the vertical padding lives inside the scroll area, so content scrolls right up to the card header
+      // instead of disappearing into a fixed blank band under it
       .deploy-vm-form-column > .ant-card > :deep(.ant-card-body) {
         display: flex;
         flex-direction: column;
+        padding-top: 0;
+        padding-bottom: 0;
       }
 
       .deploy-vm-form-scroll {
         flex: 1;
         min-height: 0;
+        padding-block: 24px;
         overflow-y: auto;
         overscroll-behavior-y: contain;
         scrollbar-width: none;
