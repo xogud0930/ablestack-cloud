@@ -19,7 +19,7 @@
   <section
     v-show="isVisible"
     class="bottom-activity-panel"
-    :class="{ 'is-collapsed': collapsed, 'is-resizing': resizing }"
+    :class="{ 'is-collapsed': collapsed, 'is-resizing': resizing, 'is-empty': activeRows.length === 0 }"
     :style="{ height: currentHeight + 'px', '--activity-table-body-height': tableBodyHeight + 'px' }"
     aria-label="Activity panel">
     <div
@@ -80,6 +80,7 @@
         v-if="activeTab === 'events'"
         :columns="eventColumns"
         :dataSource="events"
+        :loading="!eventsLoaded"
         rowKey="id"
         :bordered="false"
         :pagination="false"
@@ -91,6 +92,7 @@
         v-else
         :columns="alertColumns"
         :dataSource="alerts"
+        :loading="!alertsLoaded"
         rowKey="id"
         :bordered="false"
         :pagination="false"
@@ -133,8 +135,10 @@ export default {
     return {
       activeTab: 'events',
       alerts: [],
+      alertsLoaded: false,
       collapsed: false,
       events: [],
+      eventsLoaded: false,
       eventListBarMinutes: 5 * 60 * 1000,
       expandedHeight: DEFAULT_HEIGHT,
       refreshInterval: null,
@@ -280,8 +284,10 @@ export default {
         if (!this.isListRequestCurrent('fetchEvents', request)) return
         const events = response?.listeventsresponse?.event || []
         this.events = this.filterRecentEvents(events, this.eventListBarMinutes)
+        this.eventsLoaded = true
       } catch (error) {
         if (!this.isListRequestCurrent('fetchEvents', request)) return
+        this.eventsLoaded = true
         request.failed = true
         this.listRefreshFailed = true
         console.error('Error getting event list:', error)
@@ -294,8 +300,10 @@ export default {
         const response = await getAPI('listAlerts', { page: 1, pagesize: 20, listall: true })
         if (!this.isListRequestCurrent('fetchAlerts', request)) return
         this.alerts = response?.listalertsresponse?.alert || []
+        this.alertsLoaded = true
       } catch (error) {
         if (!this.isListRequestCurrent('fetchAlerts', request)) return
+        this.alertsLoaded = true
         request.failed = true
         this.listRefreshFailed = true
         console.error('Error getting alert list:', error)
@@ -518,6 +526,12 @@ export default {
     border-top: 1px solid var(--ui-border);
     font-size: 11px;
   }
+
+  // the empty placeholder is a single centered row; antd would still offer a horizontal scrollbar for scroll.x
+  &.is-empty .ant-table-body { overflow-x: hidden !important; }
+
+  // before the first response the table is loading, not empty
+  .ant-spin-blur .ant-table-placeholder .ant-empty { visibility: hidden; }
 
   &.is-collapsed {
     .bottom-activity-panel__resize-handle { cursor: default; }
