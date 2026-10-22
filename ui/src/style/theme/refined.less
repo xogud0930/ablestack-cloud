@@ -697,6 +697,11 @@ html.theme-refined body {
     background: #34c759;
   }
 
+  // the knob stays white in both modes (dark-mode.less leaves it dark)
+  .ant-switch-handle::before {
+    background-color: #fff !important;
+  }
+
   .ant-tag {
     border-radius: 999px;
     padding: 1px 10px;
@@ -921,13 +926,15 @@ html.theme-refined body {
     background: var(--ui-bg-selected) !important;
   }
 
-  // right-click resource menu: same surface as dropdowns, rounder rows
-  .resource-context-menu {
+  // right-click resource menu and the 작업 action panel: same surface as dropdowns, rounder rows
+  // (!important: dark-mode.less paints both panels with its own colors and border)
+  .resource-context-menu,
+  .autogen-action-dropdown__content {
     padding: 6px;
-    background: var(--ui-bg-elevated);
-    border: 0;
+    background: var(--ui-bg-elevated) !important;
+    border: 0 !important;
     border-radius: 12px;
-    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16) !important;
     backdrop-filter: blur(24px) saturate(180%);
 
     .resource-action-menu__title {
@@ -960,8 +967,10 @@ html.theme-refined body {
   }
 
   .ant-dropdown-menu-item-divider,
-  .ant-dropdown-menu-submenu-title-divider {
-    background-color: var(--ui-border);
+  .ant-dropdown-menu-submenu-title-divider,
+  .ant-menu-item-divider {
+    background-color: var(--ui-border) !important;
+    border-color: var(--ui-border) !important;
   }
 
   .ant-tooltip-inner {
@@ -1029,10 +1038,15 @@ html.theme-refined.dark-mode body {
     }
   }
 
-  .resource-context-menu .resource-action-menu,
-  .resource-context-menu .resource-action-menu__title,
-  .resource-context-menu .resource-action-menu__list.ant-menu {
-    background: transparent !important;
+  // the action list inside both panels is painted #1f1f1f / slate, which showed as an inner box
+  .resource-context-menu,
+  .autogen-action-dropdown__content {
+    .row-action-button--dataview,
+    .resource-action-menu,
+    .resource-action-menu__title,
+    .resource-action-menu__list.ant-menu {
+      background: transparent !important;
+    }
   }
 }
 
