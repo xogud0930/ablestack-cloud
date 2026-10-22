@@ -241,7 +241,7 @@
     </a-form-item>
     <a-row justify="space-between">
       <a-col>
-      <translation-menu/>
+      <translation-menu show-label />
       </a-col>
       <a-col v-if="forgotPasswordEnabled">
         <router-link :to="{ name: 'forgotPassword' }">

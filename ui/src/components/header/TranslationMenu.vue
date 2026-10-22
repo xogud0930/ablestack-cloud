@@ -17,32 +17,23 @@
 
 <template>
   <a-dropdown>
-    <span class="action ant-dropdown-link translation-menu">
+    <span
+      class="action ant-dropdown-link translation-menu"
+      :class="{ 'translation-menu--labeled': showLabel }">
       <TranslationOutlined />
+      <template v-if="showLabel">
+        <span class="translation-menu__label">{{ currentLanguageName }}</span>
+        <DownOutlined class="translation-menu__caret" />
+      </template>
     </span>
     <template #overlay>
       <a-menu
         :selectedKeys="[language]"
         @click="onClick">
-        <a-menu-item key="ko_KR" value="koKR">한국어</a-menu-item>
-        <a-menu-item key="en" value="enUS">English</a-menu-item>
-        <a-menu-item key="hi" value="hi">हिन्दी</a-menu-item>
-        <a-menu-item key="te" value="te">తెలుగు</a-menu-item>
-        <a-menu-item key="ja_JP" value="jpJP">日本語</a-menu-item>
-        <a-menu-item key="zh_CN" value="zhCN">简体中文</a-menu-item>
-        <a-menu-item key="ar" value="arEG">Arabic</a-menu-item>
-        <a-menu-item key="ca" value="caES">Catalan</a-menu-item>
-        <a-menu-item key="de_DE" value="deDE">Deutsch</a-menu-item>
-        <a-menu-item key="es" value="esES">Español</a-menu-item>
-        <a-menu-item key="fr_FR" value="frFR">Français</a-menu-item>
-        <a-menu-item key="it_IT" value="itIT">Italiano</a-menu-item>
-        <a-menu-item key="hu" value="huHU">Magyar</a-menu-item>
-        <a-menu-item key="nl_NL" value="nlNL">Nederlands</a-menu-item>
-        <a-menu-item key="nb_NO" value="nbNO">Norsk</a-menu-item>
-        <a-menu-item key="pl" value="plPL">Polish</a-menu-item>
-        <a-menu-item key="pt_BR" value="ptBR">Português brasileiro</a-menu-item>
-        <a-menu-item key="ru_RU" value="ruRU">Русский</a-menu-item>
-        <a-menu-item key="el_GR" value="elGR">Ελληνικά</a-menu-item>
+        <a-menu-item
+          v-for="item in languages"
+          :key="item.key"
+          :value="item.value">{{ item.name }}</a-menu-item>
       </a-menu>
     </template>
   </a-dropdown>
@@ -56,11 +47,46 @@ import { vueProps } from '@/vue-app'
 
 moment.locale('ko_KR')
 
+const LANGUAGES = [
+  { key: 'ko_KR', value: 'koKR', name: '한국어' },
+  { key: 'en', value: 'enUS', name: 'English' },
+  { key: 'hi', value: 'hi', name: 'हिन्दी' },
+  { key: 'te', value: 'te', name: 'తెలుగు' },
+  { key: 'ja_JP', value: 'jpJP', name: '日本語' },
+  { key: 'zh_CN', value: 'zhCN', name: '简体中文' },
+  { key: 'ar', value: 'arEG', name: 'Arabic' },
+  { key: 'ca', value: 'caES', name: 'Catalan' },
+  { key: 'de_DE', value: 'deDE', name: 'Deutsch' },
+  { key: 'es', value: 'esES', name: 'Español' },
+  { key: 'fr_FR', value: 'frFR', name: 'Français' },
+  { key: 'it_IT', value: 'itIT', name: 'Italiano' },
+  { key: 'hu', value: 'huHU', name: 'Magyar' },
+  { key: 'nl_NL', value: 'nlNL', name: 'Nederlands' },
+  { key: 'nb_NO', value: 'nbNO', name: 'Norsk' },
+  { key: 'pl', value: 'plPL', name: 'Polish' },
+  { key: 'pt_BR', value: 'ptBR', name: 'Português brasileiro' },
+  { key: 'ru_RU', value: 'ruRU', name: 'Русский' },
+  { key: 'el_GR', value: 'elGR', name: 'Ελληνικά' }
+]
+
 export default {
   name: 'TranslationMenu',
+  props: {
+    // show the current language name next to the icon (login screen)
+    showLabel: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
-      language: 'ko_KR'
+      language: 'ko_KR',
+      languages: LANGUAGES
+    }
+  },
+  computed: {
+    currentLanguageName () {
+      return LANGUAGES.find(item => item.key === this.language)?.name || this.language
     }
   },
   mounted () {
@@ -91,6 +117,29 @@ export default {
 .translation-menu {
   font-size: 18px;
   line-height: 1;
+}
+
+.translation-menu--labeled {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  color: var(--ui-text-secondary);
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    color: var(--ui-text-primary);
+    background: var(--ui-bg-hover);
+  }
+
+  .translation-menu__caret {
+    font-size: 10px;
+    opacity: 0.6;
+  }
 }
 
 </style>
