@@ -1541,7 +1541,9 @@ export default {
       const top = container.getBoundingClientRect().top
       const toolbar = container.querySelector('.breadcrumb-card')
       const header = toolbar ? Math.max(0, Math.round(toolbar.getBoundingClientRect().bottom - top)) : 0
-      const scroll = container.querySelector('.list-pagination')?.offsetHeight || 0
+      // the scrollbar is placed inside the area's bottom padding, while the pagination bar covers that padding too
+      const pagination = container.querySelector('.list-pagination')?.offsetHeight || 0
+      const scroll = Math.max(0, pagination - (parseFloat(getComputedStyle(container).paddingBottom) || 0))
       if (header !== this.stickyOffsets.header || scroll !== this.stickyOffsets.scroll) {
         this.stickyOffsets = { header, scroll }
       }
@@ -2115,6 +2117,26 @@ export default {
 .list-view-table-wrapper .ant-table-ping-left .ant-table-body,
 .list-view-table-wrapper .ant-table-ping-right .ant-table-body {
   padding-bottom: 10px;
+}
+
+/* antd sizes the floating horizontal scrollbar from the native scrollbar, which the thin
+   scrollbars make 0px tall, so the thumb straddled the last row; give it its own track */
+.list-view-table-wrapper .ant-table-sticky-scroll {
+  height: 12px !important;
+  background: var(--ui-bg-surface);
+  border-top: 1px solid var(--ui-border);
+  opacity: 1;
+}
+
+.list-view-table-wrapper .ant-table-sticky-scroll-bar {
+  height: 6px;
+  background-color: var(--ui-scroll-thumb);
+  border-radius: 3px;
+}
+
+.list-view-table-wrapper .ant-table-sticky-scroll-bar:hover,
+.list-view-table-wrapper .ant-table-sticky-scroll-bar-active {
+  background-color: var(--ui-text-muted);
 }
 
 /* at most two lines per cell; the full text shows as a tooltip when clamped */
