@@ -25,6 +25,7 @@
       :dataSource="items"
       :scroll="{ x: tableScrollX }"
       :sticky="tableSticky"
+      :components="tableComponents"
       tableLayout="auto"
       :rowKey="listRowKey"
       :pagination="false"
@@ -1175,8 +1176,8 @@
         <span>{{ formatThresholdLabelSafe(record) }}</span>
       </template>
     </template>
-    <template #footer>
-      <span v-if="hasSelected">
+    <template v-if="hasSelected" #footer>
+      <span>
         {{ $t('label.items.selected.count', [selectedRowKeys.length]) }}
       </span>
     </template>
@@ -1218,8 +1219,23 @@ import cronstrue from 'cronstrue/i18n'
 import moment from 'moment-timezone'
 import { timeZoneName } from '@/utils/timezone'
 import { FileTextOutlined } from '@ant-design/icons-vue'
+import { h } from 'vue'
 
 let headerMeasureContext = null
+
+function showClampedTitle (event) {
+  const el = event.currentTarget
+  el.title = el.scrollHeight > el.clientHeight + 1 ? el.innerText : ''
+}
+
+// a td cannot be line-clamped, so body cells wrap their content in a two-line box;
+// full-width rows (empty placeholder) and the checkbox cell are left alone
+const ClampedBodyCell = (_, { attrs, slots }) => {
+  const content = slots.default && slots.default()
+  if (attrs.colSpan > 1 || String(attrs.class || '').includes('selection-column')) return h('td', attrs, content)
+  return h('td', attrs, [h('div', { class: 'list-cell-clamp', onMouseenter: showClampedTitle }, content)])
+}
+const TABLE_COMPONENTS = { body: { cell: ClampedBodyCell } }
 
 export default {
   name: 'ListView',
@@ -1285,6 +1301,7 @@ export default {
   data () {
     return {
       stickyOffsets: { header: 0, scroll: 0 },
+      contentWidths: {},
       selectedRowKeys: [],
       editableValueKey: null,
       editableValue: '',
@@ -1343,9 +1360,13 @@ export default {
     }
   },
   watch: {
+    columns () {
+      this.$nextTick(this.measureContentWidths)
+    },
     items: {
       deep: true,
       handler (newData, oldData) {
+        this.$nextTick(this.measureContentWidths)
         if (newData === oldData) return
         const selected = new Set(this.selectedRowKeys)
         const rows = this.items.filter(record => selected.has(listRowKey(record)))
@@ -1389,14 +1410,17 @@ export default {
         // the first column names the row, so it stays put while the rest scrolls sideways
         const pinned = index === 0 && col.dataIndex !== 'filtercolumn' ? { fixed: 'left' } : {}
         if (col.width) return { ...col, ...pinned }
-        const minWidth = this.headerMinWidth(col) + 'px'
+        const minWidth = this.columnMinWidth(col) + 'px'
         return { ...col, ...pinned, customCell: () => ({ style: { minWidth } }) }
       })
     },
-    // beyond the sum of header widths the table scrolls sideways instead of squeezing columns
+    // beyond the sum of column minimums the table scrolls sideways instead of squeezing columns
     tableScrollX () {
       if (['autoscalevmgroup', 'affinitygroup'].includes(this.$route.name)) return 980
-      return this.tableColumns.reduce((sum, col) => sum + (Number(col.width) || this.headerMinWidth(col)), 32)
+      return this.tableColumns.reduce((sum, col) => sum + (Number(col.width) || this.columnMinWidth(col)), 32)
+    },
+    tableComponents () {
+      return TABLE_COMPONENTS
     },
     tableSticky () {
       return {
@@ -1463,6 +1487,40 @@ export default {
     }
   },
   methods: {
+    // short values stay on one line; longer ones get room for about two lines (cells clamp at two),
+    // up to 360px, past which the text is cut and shown as a tooltip
+    columnMinWidth (col) {
+      const content = this.contentWidths[col.dataIndex]
+      const contentMin = !content ? 0 : (content <= 140 ? content : Math.min(Math.max(140, Math.ceil(content * 0.55)), 360)) + 16
+      return Math.max(this.headerMinWidth(col), contentMin)
+    },
+    // single-line width of the widest rendered value per column, from the visible rows
+    measureContentWidths () {
+      const rows = this.$refs.tableWrapper?.querySelectorAll('.ant-table-body tr.ant-table-row')
+      if (!rows || !rows.length) return
+      if (!headerMeasureContext) headerMeasureContext = document.createElement('canvas').getContext('2d')
+      const columns = this.tableColumns
+      const widths = {}
+      let fontSet = false
+      rows.forEach(row => {
+        const cells = [...row.children].filter(td => !td.classList.contains('ant-table-selection-column'))
+        cells.forEach((td, index) => {
+          const key = columns[index]?.dataIndex
+          if (!key || key === 'filtercolumn') return
+          if (!fontSet) {
+            const style = getComputedStyle(td)
+            headerMeasureContext.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+            fontSet = true
+          }
+          const lines = td.innerText.split('\n').filter(Boolean)
+          const text = Math.max(0, ...lines.map(line => headerMeasureContext.measureText(line).width))
+          // icons and tags add width that the text alone does not show
+          const extra = td.querySelectorAll('.anticon, img, .ant-badge-status-dot').length * 20 + td.querySelectorAll('.ant-tag').length * 16
+          widths[key] = Math.max(widths[key] || 0, Math.ceil(text + extra))
+        })
+      })
+      if (JSON.stringify(widths) !== JSON.stringify(this.contentWidths)) this.contentWidths = widths
+    },
     headerMinWidth (col) {
       const title = typeof col.title === 'string' ? col.title : ''
       if (!title) return 64
@@ -2051,6 +2109,20 @@ export default {
 
 .list-view-table-wrapper .ant-table-thead > tr > th {
   white-space: nowrap;
+}
+
+/* overlay scrollbars take no space, so keep the horizontal one off the last row while the table scrolls sideways */
+.list-view-table-wrapper .ant-table-ping-left .ant-table-body,
+.list-view-table-wrapper .ant-table-ping-right .ant-table-body {
+  padding-bottom: 10px;
+}
+
+/* at most two lines per cell; the full text shows as a tooltip when clamped */
+.list-view-table-wrapper .list-cell-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 /* Korean breaks between words; a token longer than the column may still break anywhere */
