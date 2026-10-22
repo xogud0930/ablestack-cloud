@@ -28,7 +28,7 @@
       tableLayout="auto"
       :rowKey="listRowKey"
       :pagination="false"
-      :rowSelection="explicitlyAllowRowSelection || enableGroupAction() || $route.name === 'event' ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: record => ({ disabled: selectionDisabled(record) }), columnWidth: 30} : null"
+      :rowSelection="explicitlyAllowRowSelection || enableGroupAction() || $route.name === 'event' ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: record => ({ disabled: selectionDisabled(record) }), columnWidth: 30, fixed: true} : null"
       :rowClassName="getRowClassName"
       :customRow="snapshotRowEvents"
       @change="handleTableChange"
@@ -1385,10 +1385,12 @@ export default {
     // the sticky header is a separate table, so body cells carry the header's one-line width as their minimum
     tableColumns () {
       const columns = this.isOrderUpdatable() ? this.columns : this.columns.filter(x => x.dataIndex !== 'order')
-      return columns.map(col => {
-        if (col.width) return col
+      return columns.map((col, index) => {
+        // the first column names the row, so it stays put while the rest scrolls sideways
+        const pinned = index === 0 && col.dataIndex !== 'filtercolumn' ? { fixed: 'left' } : {}
+        if (col.width) return { ...col, ...pinned }
         const minWidth = this.headerMinWidth(col) + 'px'
-        return { ...col, customCell: () => ({ style: { minWidth } }) }
+        return { ...col, ...pinned, customCell: () => ({ style: { minWidth } }) }
       })
     },
     // beyond the sum of header widths the table scrolls sideways instead of squeezing columns
