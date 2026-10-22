@@ -16,7 +16,7 @@
 // under the License.
 
 <template>
-  <a-dropdown>
+  <a-dropdown overlayClassName="translation-menu-dropdown">
     <span
       class="action ant-dropdown-link translation-menu"
       :class="{ 'translation-menu--labeled': showLabel }">
@@ -142,4 +142,12 @@ export default {
   }
 }
 
+</style>
+
+<style lang="less">
+// 19 languages: keep the list short enough to open below or above the trigger instead of covering the page
+.translation-menu-dropdown .ant-dropdown-menu {
+  max-height: ~"min(60vh, 360px)";
+  overflow-y: auto;
+}
 </style>
