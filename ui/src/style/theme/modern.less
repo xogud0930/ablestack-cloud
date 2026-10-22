@@ -277,11 +277,31 @@ html body {
       }
     }
 
-    // the bottom fades so a cut-off list reads as scrollable; the padding keeps the last row clear of it
+    // usage lists: the title row stays put and only the list scrolls, same as the alert / event feeds
     .dashboard-compute > .ant-card-body,
     .dashboard-storage > .ant-card-body {
-      padding-bottom: 28px;
-      mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > .chart-card-header {
+        flex: none;
+      }
+
+      > .chart-card-content {
+        flex: 1;
+        min-height: 0;
+        margin-right: -12px;
+        padding-right: 12px;
+        padding-bottom: 16px;
+        overflow-y: auto;
+        // rows fade out at the edges so a cut-off list reads as scrollable
+        mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 16px), transparent 100%);
+      }
+
+      > .chart-card-footer:has(> .chart-card-field:empty) {
+        display: none;
+      }
     }
 
     // card menu (project dashboard ⋮) sits at the right edge of the title row

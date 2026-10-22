@@ -1538,12 +1538,14 @@ export default {
     updateStickyOffsets () {
       const container = this.stickyContainer
       if (!container) return
-      const top = container.getBoundingClientRect().top
+      // sticky offsets count from the area's top padding edge, not its border box
+      const style = getComputedStyle(container)
+      const top = container.getBoundingClientRect().top + (parseFloat(style.paddingTop) || 0)
       const toolbar = container.querySelector('.breadcrumb-card')
       const header = toolbar ? Math.max(0, Math.round(toolbar.getBoundingClientRect().bottom - top)) : 0
       // the scrollbar is placed inside the area's bottom padding, while the pagination bar covers that padding too
       const pagination = container.querySelector('.list-pagination')?.offsetHeight || 0
-      const scroll = Math.max(0, pagination - (parseFloat(getComputedStyle(container).paddingBottom) || 0))
+      const scroll = Math.max(0, pagination - (parseFloat(style.paddingBottom) || 0))
       if (header !== this.stickyOffsets.header || scroll !== this.stickyOffsets.scroll) {
         this.stickyOffsets = { header, scroll }
       }

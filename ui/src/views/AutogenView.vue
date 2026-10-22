@@ -3325,7 +3325,7 @@ export default {
   /* -26px cancels the wrapper's 10px margin and that 16px padding, so the bar rests at the end
      of the list exactly where it sticks and does not shift as the scroll reaches the end */
   margin: 0 0 -26px;
-  padding: 6px 0;
+  padding: 8px 0 14px;
   background: var(--ui-bg-page);
 }
 

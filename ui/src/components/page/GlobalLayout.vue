@@ -514,7 +514,10 @@ body.dark-mode .banner-spacer::before {
 /* 고정 헤더 사용 시 컨텐츠 상단 여백 */
 .layout-content {
   &.is-header-fixed {
-    margin: 78px 0 0;
+    // the gap below the header is padding, not margin, so content scrolls up to the header edge
+    // instead of being cut 14px below it with a strip of page background showing
+    margin: 64px 0 0;
+    padding-top: 14px;
     padding-right: 12px;
     padding-left: 12px;
     box-sizing: border-box;
