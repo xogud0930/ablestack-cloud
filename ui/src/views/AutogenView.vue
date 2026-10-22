@@ -83,16 +83,16 @@
                   style="margin-left: 8px; min-height: 23px; margin-bottom: 4px"
                   :checked-children="$t('label.metrics')"
                   :un-checked-children="$t('label.metrics')"
-                  :checked="$store.getters.metrics"
-                  @change="(checked, event) => { $store.dispatch('SetMetrics', checked) }"
+                  :checked="pendingSwitches.metrics ?? $store.getters.metrics"
+                  @change="checked => dispatchAfterSwitch('metrics', 'SetMetrics', checked)"
                 />
                 <a-switch
                   v-if="!projectView && hasProjectId"
                   style="margin-left: 8px; min-height: 23px; margin-bottom: 4px"
                   :checked-children="$t('label.projects')"
                   :un-checked-children="$t('label.projects')"
-                  :checked="$store.getters.listAllProjects"
-                  @change="(checked, event) => { $store.dispatch('SetListAllProjects', checked) }"
+                  :checked="pendingSwitches.listAllProjects ?? $store.getters.listAllProjects"
+                  @change="checked => dispatchAfterSwitch('listAllProjects', 'SetListAllProjects', checked)"
                 />
               </template>
             </breadcrumb>
@@ -975,6 +975,7 @@ export default {
   data () {
     return {
       apiName: '',
+      pendingSwitches: { metrics: null, listAllProjects: null },
       loading: false,
       // IntervalLoading: false,
       actionLoading: false,
@@ -1371,6 +1372,15 @@ export default {
   },
   methods: {
     documentationUrl,
+    // the store change reloads the list synchronously; flip the switch first and
+    // dispatch after its 200ms knob transition so the reload does not stall it
+    dispatchAfterSwitch (key, action, checked) {
+      this.pendingSwitches[key] = checked
+      setTimeout(() => {
+        this.$store.dispatch(action, checked)
+        this.pendingSwitches[key] = null
+      }, 220)
+    },
     rejectSshKeyPairDetail (status) {
       this.sshKeyPairDetailStatus = status
       this.items = []; this.resource = {}; this.itemCount = 0
