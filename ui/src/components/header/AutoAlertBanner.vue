@@ -28,15 +28,21 @@
           v-if="wallState !== 'Ready'"
           class="wall-notice"
           type="info"
-          show-icon
-          closable
-          @close="dismissWallNotice">
+          show-icon>
           <template #message>
-            {{ $t('message.wall.availability.unavailable') }}
-            <a-tag class="wall-notice__state">{{ $t('label.wall.availability.' + wallState) }}</a-tag>
-          </template>
-          <template #closeIcon>
-            <up-outlined :title="$t('label.wall.notice.fold')" />
+            <span class="wall-notice__text">
+              {{ $t('message.wall.availability.unavailable') }}
+              <a-tag class="wall-notice__state">{{ $t('label.wall.availability.' + wallState) }}</a-tag>
+            </span>
+            <!-- this antd version has no alert action slot, so the buttons sit at the end of the message -->
+            <span class="wall-notice__actions">
+              <button type="button" class="wall-notice__action" :title="$t('label.wall.notice.fold')" @click="dismissWallNotice">
+                <up-outlined />
+              </button>
+              <button type="button" class="wall-notice__action" :title="$t('label.wall.notice.hide')" @click="hideWallNotice">
+                <close-outlined />
+              </button>
+            </span>
           </template>
         </a-alert>
         <a-alert
@@ -898,7 +904,15 @@ export default {
     }
     const dismissWallNotice = () => setWallNoticeDismissed(wallState.value)
     const expandWallNotice = () => setWallNoticeDismissed('')
-    const wallNoticeFolded = computed(() => !['Ready', 'Unknown'].includes(wallState.value) && wallNoticeDismissed.value === wallState.value)
+    // hiding drops the notice and its tab for good (this browser) until the Wall state changes
+    const WALL_NOTICE_HIDDEN_KEY = 'autoAlertBanner.wallNoticeHidden'
+    const wallNoticeHidden = ref((() => { try { return localStorage.getItem(WALL_NOTICE_HIDDEN_KEY) || '' } catch (_) { return '' } })())
+    const hideWallNotice = () => {
+      wallNoticeHidden.value = wallState.value
+      try { localStorage.setItem(WALL_NOTICE_HIDDEN_KEY, wallState.value) } catch (_) {}
+    }
+    const wallNoticeFolded = computed(() => !['Ready', 'Unknown'].includes(wallState.value) &&
+      wallNoticeHidden.value !== wallState.value && wallNoticeDismissed.value === wallState.value)
     const wallGate = createWallGate((name) => {
       if (!allowed(name)) return Promise.resolve({})
       return requestAPI(name, {}, { optionalDiscovery: true })
@@ -2613,7 +2627,9 @@ export default {
     })
 
     const showBanner = computed(() => {
-      if (wallState.value !== 'Ready') return wallState.value !== 'Unknown' && wallNoticeDismissed.value !== wallState.value
+      if (wallState.value !== 'Ready') {
+        return wallState.value !== 'Unknown' && wallNoticeDismissed.value !== wallState.value && wallNoticeHidden.value !== wallState.value
+      }
       const hasList = Array.isArray(visibleAlerts.value) && visibleAlerts.value.length > 0
       return (keepShowing.value || remoteSilencedLoaded.value) && hasList
     })
@@ -2996,6 +3012,7 @@ export default {
       wallState,
       dismissWallNotice,
       expandWallNotice,
+      hideWallNotice,
       wallNoticeFolded,
       drawerVisible,
       drawerListRef,

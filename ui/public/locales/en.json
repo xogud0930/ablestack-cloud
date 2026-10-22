@@ -8211,6 +8211,7 @@
   "message.wall.availability.unavailable": "Wall monitoring is unavailable. Alerts may be outdated; Mold remains available.",
   "label.wall.notice.fold": "Fold",
   "label.wall.notice.unfold": "Unfold",
+  "label.wall.notice.hide": "Hide (shown again when the state changes)",
   "label.wall.availability.Disabled": "Disabled",
   "label.wall.availability.NotConfigured": "Not configured",
   "label.wall.availability.Unavailable": "Unavailable",
