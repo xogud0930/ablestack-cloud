@@ -164,6 +164,15 @@ html.theme-refined body {
     color: var(--ui-text-primary);
   }
 
+  // the single-item label matches the submenu popup surface (refined's tooltip rule is dark and smaller)
+  .ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
+    color: var(--ui-text-primary);
+    background: var(--ui-bg-navigation);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16);
+  }
+
   // header and page toolbar read as one translucent chrome tinted like the page
   .sticky-header .ant-layout-header,
   .sticky-header .ant-layout-header .header {

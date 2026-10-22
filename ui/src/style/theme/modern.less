@@ -214,6 +214,34 @@ html body {
     }
   }
 
+  // collapsed sider: a single item's hover label is a one-row version of the submenu popup below
+  .ant-menu-inline-collapsed-tooltip {
+    .ant-tooltip-arrow {
+      display: none;
+    }
+
+    .ant-tooltip-inner {
+      display: flex;
+      align-items: center;
+      min-height: 54px;
+      padding: 6px 18px;
+      color: var(--ui-text-primary);
+      font-size: 14px;
+      background: var(--ui-bg-navigation);
+      border: 1px solid var(--ui-border);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+
+      a {
+        color: inherit;
+      }
+
+      .anticon {
+        margin-right: 10px;
+      }
+    }
+  }
+
   // collapsed sider: hover popup of a submenu
   .ant-menu-submenu-popup {
     left: 88px !important;
