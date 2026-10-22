@@ -17,7 +17,7 @@
 
 <template>
   <a-popover
-    v-model="visible"
+    v-model:visible="visible"
     trigger="click"
     placement="bottom"
     :autoAdjustOverflow="true"
