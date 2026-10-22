@@ -74,9 +74,28 @@ export default {
       return this.collapsed
     }
   },
+  watch: {
+    '$route.path' () {
+      this.revealSelected()
+    }
+  },
+  mounted () {
+    this.revealSelected()
+  },
+  beforeUnmount () {
+    clearTimeout(this.revealTimer)
+  },
   methods: {
     onSelect (obj) {
       this.$emit('menuSelect', obj)
+    },
+    // the menu scrolls on its own; keep the current page's item in view once its submenu has opened
+    revealSelected () {
+      clearTimeout(this.revealTimer)
+      this.revealTimer = setTimeout(() => {
+        const item = this.$el && this.$el.querySelector && this.$el.querySelector('.ant-menu-item-selected')
+        if (item) item.scrollIntoView({ block: 'nearest' })
+      }, 300)
     }
   }
 }

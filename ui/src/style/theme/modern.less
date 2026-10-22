@@ -46,6 +46,38 @@ html body {
     border-right: 1px solid var(--ui-border);
   }
 
+  // only the menu scrolls; the logo above it stays put
+  .sider .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    > :not(.ant-menu) {
+      flex: none;
+    }
+
+    > .ant-menu-root {
+      flex: 1;
+      min-height: 0;
+      padding-bottom: 24px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      // the bar shows only while the pointer is over the sidebar; the bottom fade hints at more items
+      scrollbar-color: transparent transparent;
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+    }
+
+    &:hover > .ant-menu-root {
+      scrollbar-color: var(--ui-scroll-thumb) transparent;
+    }
+
+    // revealed items stop clear of the bottom fade
+    .ant-menu-item {
+      scroll-margin-block: 32px;
+    }
+  }
+
   .sider.light .ant-menu-inline,
   .sider.light .ant-menu-vertical {
     border-right: 0;
