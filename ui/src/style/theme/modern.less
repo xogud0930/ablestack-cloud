@@ -1,0 +1,576 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+/* Modern look: frame, surfaces and tables for light and dark modes. Loaded last; colors come from --ui-* tokens. */
+
+@modern-primary: #1890ff;
+@modern-radius-lg: 12px;
+@modern-radius: 8px;
+@modern-surface-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.04);
+
+html body {
+  // top banners only; in-page alerts keep their own shape
+  .auto-alert-banner-container .ant-alert,
+  .announcement-banner-container .ant-alert {
+    border-radius: 10px;
+  }
+
+  // sidebar
+  // only the sider paints; inner layers stay transparent so the column is one color in both modes
+  .sider.light {
+    background: var(--ui-bg-navigation);
+  }
+
+  .sider.light .ant-layout-sider-children,
+  .sider.light .ant-menu,
+  .sider.light .logo {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .sider.light {
+    border-right: 1px solid var(--ui-border);
+  }
+
+  .sider.light .ant-menu-inline,
+  .sider.light .ant-menu-vertical {
+    border-right: 0;
+  }
+
+  .sider.light .ant-menu-item,
+  .sider.light .ant-menu-submenu-title {
+    width: calc(100% - 16px);
+    margin: 2px 8px;
+    border-radius: @modern-radius;
+    color: var(--ui-text-secondary);
+  }
+
+  // collapsed: antd pads by calc(50% - icon/2); subtract the 8px side margin so the icon stays centered
+  .sider.light .ant-menu-inline-collapsed {
+    > .ant-menu-item,
+    > .ant-menu-submenu > .ant-menu-submenu-title {
+      margin: 2px 8px;
+      padding: 0 calc(50% - 16px) !important;
+    }
+  }
+
+  .sider.light .ant-menu-item:hover,
+  .sider.light .ant-menu-submenu-title:hover {
+    background: var(--ui-bg-hover);
+    color: var(--ui-text-primary);
+  }
+
+  .sider.light .ant-menu-item-selected,
+  .sider.light .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background: fade(@modern-primary, 10%);
+    color: @modern-primary;
+    font-weight: 600;
+
+    &::after {
+      display: none;
+    }
+
+    a,
+    .anticon {
+      color: @modern-primary;
+    }
+  }
+
+  .sider.light .ant-menu-item,
+  .sider.light .ant-menu-submenu-title {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  // expanded submenu body: antd paints it its own color, which shows as a band
+  .sider.light .ant-menu-sub.ant-menu-inline {
+    background: transparent;
+  }
+
+  // collapsed: mark the section that holds the current page, same look as a selected item
+  .sider.light .ant-menu-inline-collapsed > .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    background: fade(@modern-primary, 10%);
+
+    .anticon,
+    .custom-icon path {
+      color: @modern-primary;
+      fill: @modern-primary;
+    }
+  }
+
+  // collapsed sider: hover popup of a submenu
+  .ant-menu-submenu-popup {
+    left: 88px !important;
+    background: transparent;
+
+    > .ant-menu {
+      padding: 6px;
+      background: var(--ui-bg-navigation);
+      border: 1px solid var(--ui-border);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+    }
+
+    // same row metrics as the expanded sider; antd adds 8px under every vertical item
+    .ant-menu-item,
+    .ant-menu-vertical .ant-menu-item:not(:last-child) {
+      height: 40px;
+      margin: 0;
+      padding: 0 12px;
+      color: var(--ui-text-secondary);
+      line-height: 40px;
+      border-radius: 8px;
+
+      &::after {
+        display: none;
+      }
+
+      > a {
+        color: inherit;
+      }
+
+      &:hover {
+        background: var(--ui-bg-hover);
+        color: var(--ui-text-primary);
+      }
+    }
+
+    .ant-menu-item-selected,
+    .ant-menu-item-selected:hover,
+    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      background: fade(@modern-primary, 10%);
+      color: @modern-primary;
+      font-weight: 600;
+
+      > a,
+      .anticon {
+        color: @modern-primary;
+      }
+    }
+  }
+
+  // modal: no rules between header, body and footer
+  .ant-modal-header {
+    padding: 20px 24px 8px;
+    border-bottom: 0;
+  }
+
+  .ant-modal-footer {
+    padding: 12px 24px 20px;
+    border-top: 0;
+  }
+
+  .ant-tooltip-inner,
+  .ant-tooltip-arrow-content {
+    background-color: #0f172a;
+  }
+
+  // header
+  .sticky-header .ant-layout-header,
+  .sticky-header .ant-layout-header .header {
+    background: var(--ui-bg-surface);
+    box-shadow: none;
+  }
+
+  .sticky-header .ant-layout-header {
+    border-bottom: 1px solid var(--ui-border);
+  }
+
+  // page toolbar (breadcrumb + actions): full-width bar under the header
+  .breadcrumb-card.ant-card {
+    background: var(--ui-bg-surface);
+    border: 0;
+    border-bottom: 1px solid var(--ui-border);
+    border-radius: 0;
+    box-shadow: none;
+
+    > .ant-card-body {
+      padding: 14px 24px;
+    }
+  }
+
+  .breadcrumb-card .ant-breadcrumb {
+    color: var(--ui-text-muted);
+    font-size: 13px;
+
+    .ant-breadcrumb-link,
+    a {
+      color: var(--ui-text-muted);
+    }
+
+    > span:last-child .ant-breadcrumb-link {
+      color: var(--ui-text-primary);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+  }
+
+  .breadcrumb-card .ant-input-group .ant-input,
+  .breadcrumb-card .ant-input-affix-wrapper,
+  .breadcrumb-card .ant-select-selector {
+    background: var(--ui-bg-navigation);
+  }
+
+  // dashboard
+  .capacity-dashboard {
+    .capacity-dashboard-select .ant-select-selector,
+    .capacity-dashboard-button .ant-btn {
+      border-color: var(--ui-border);
+      box-shadow: @modern-surface-shadow;
+    }
+
+    // every card fills its column, so cards in one row share the tallest height
+    > .ant-col {
+      display: flex;
+      flex-direction: column;
+
+      > a {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+    }
+
+    .dashboard-card,
+    .dashboard-storage,
+    .dashboard-event {
+      flex: 1;
+      min-height: 370px;
+      max-height: none;
+      border: 1px solid var(--ui-border);
+      border-radius: @modern-radius-lg;
+      box-shadow: @modern-surface-shadow;
+    }
+
+    // long lists scroll inside the card instead of stretching the row
+    .dashboard-storage,
+    .dashboard-event {
+      position: relative;
+      overflow: hidden;
+
+      > .ant-card-body {
+        position: absolute;
+        inset: 0;
+        overflow-y: auto;
+      }
+
+      // ChartCard sizes its content at 100%, which overflows once the body has a fixed height
+      .chart-card-content {
+        height: auto;
+      }
+    }
+
+    .chart-card-title {
+      display: block;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--ui-border);
+    }
+
+    .chart-card-title .center,
+    .dashboard-event > .ant-card-body > .center:first-child {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    h3 {
+      margin: 0;
+      color: var(--ui-text-primary);
+      font-size: 15px;
+      font-weight: 600;
+
+      .anticon {
+        margin-right: 6px;
+        color: @modern-primary;
+      }
+    }
+
+    .ant-statistic {
+      padding: 12px 14px;
+      background: var(--ui-bg-navigation);
+      border: 1px solid var(--ui-border);
+      border-radius: 10px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    a:hover .ant-statistic {
+      background: var(--ui-bg-surface);
+      border-color: fade(@modern-primary, 40%);
+    }
+
+    .ant-statistic-title {
+      margin-bottom: 6px;
+      color: var(--ui-text-muted);
+      font-size: 12px;
+    }
+
+    .ant-statistic-content {
+      display: flex;
+      align-items: center;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .ant-statistic-content-value {
+      color: var(--ui-text-primary) !important;
+    }
+
+    // the template puts an &nbsp; after the icon; font-size 0 removes its width so the icon centers
+    .ant-statistic-content-prefix {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+      padding: 0;
+      color: @modern-primary;
+      font-size: 0;
+      line-height: 1;
+      background: fade(@modern-primary, 10%);
+      border-radius: 8px;
+
+      > .anticon {
+        display: inline-flex;
+        font-size: 16px;
+        vertical-align: 0;
+      }
+    }
+
+    // host alerts: drop the ✓ / ! badge and show the state through the icon tile color
+    .ant-statistic-content-prefix .ant-badge {
+      display: none;
+    }
+
+    .ant-statistic-content:has(.ant-badge-count[title='✓']) .ant-statistic-content-prefix {
+      color: var(--ui-success-icon);
+      background: var(--ui-success-bg);
+    }
+
+    .ant-statistic-content:has(.ant-badge-count[title='!']) {
+      .ant-statistic-content-prefix {
+        color: var(--ui-error-icon);
+        background: var(--ui-error-bg);
+      }
+
+      .ant-statistic-content-value {
+        color: var(--ui-error-icon) !important;
+      }
+    }
+
+    strong {
+      color: var(--ui-text-primary);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .ant-progress-inner {
+      background: var(--ui-bg-disabled);
+      border-radius: 999px;
+    }
+
+    .ant-progress-bg {
+      height: 8px !important;
+      border-radius: 999px;
+    }
+
+    .ant-progress-text {
+      color: var(--ui-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .chart-card-content div[style*='text-align: center'] {
+      margin-bottom: 14px;
+      color: var(--ui-text-muted);
+      font-size: 12px;
+      text-align: left !important;
+    }
+
+    .dashboard-event > .ant-card-body > .center:first-child {
+      margin-top: 0 !important;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--ui-border);
+    }
+
+    .ant-timeline-item-content {
+      color: var(--ui-text-secondary);
+      font-size: 13px;
+    }
+  }
+
+  // cards: the body paints its own background, so it must follow the card corners
+  .ant-card-bordered {
+    border-color: var(--ui-border);
+    border-radius: @modern-radius-lg;
+  }
+
+  .ant-card-body {
+    border-radius: inherit;
+  }
+
+  // under a header the body keeps square top corners and must not overlap the header's bottom line
+  .ant-card-head {
+    margin-bottom: 0;
+  }
+
+  .ant-card-head + .ant-card-body {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  // list tables
+  .list-view-table-wrapper .ant-table,
+  .ant-tabs-tabpane .ant-table {
+    border: 1px solid var(--ui-border);
+    border-radius: @modern-radius-lg;
+    box-shadow: @modern-surface-shadow;
+    overflow: hidden;
+  }
+
+  .ant-table-thead > tr > th {
+    background: var(--ui-bg-navigation);
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--ui-border);
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid var(--ui-border);
+  }
+
+  .ant-table-tbody > tr:last-child > td {
+    border-bottom: 0;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td {
+    background: var(--ui-bg-navigation);
+  }
+
+  .ant-pagination-item,
+  .ant-pagination-options .ant-select-selector {
+    border-radius: @modern-radius;
+  }
+
+  // buttons
+  .ant-btn {
+    font-weight: 500;
+    box-shadow: none;
+  }
+
+  .ant-btn-default,
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-text):not(.ant-btn-dangerous) {
+    border-color: var(--ui-border);
+  }
+
+  // status tags
+  .ant-tag {
+    border: 0;
+    border-radius: 6px;
+    padding: 1px 8px;
+  }
+
+  // details
+  .ant-descriptions-item-label {
+    color: var(--ui-text-muted);
+  }
+
+  // overlays
+  .ant-modal-content,
+  .ant-drawer-content {
+    border-radius: 14px;
+  }
+
+  .ant-dropdown-menu,
+  .ant-select-dropdown,
+  .ant-popover-inner {
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  }
+}
+
+// dark mode: the light-mode 10% primary tint is too faint on dark surfaces
+html.dark-mode body {
+  .sider.light .ant-menu-item-selected,
+  .sider.light .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    position: relative;
+    background: var(--ui-bg-selected);
+    color: #e6f4ff;
+
+    &::before {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 0;
+      width: 3px;
+      background: var(--ui-link);
+      border-radius: 0 3px 3px 0;
+      content: '';
+    }
+
+    a {
+      color: #e6f4ff;
+    }
+
+    .anticon,
+    .custom-icon path {
+      color: var(--ui-link);
+      fill: var(--ui-link);
+    }
+  }
+
+  // dark-mode.less mutes .ant-menu-vertical items; match its depth to win
+  .ant-menu-submenu-popup .ant-menu-vertical {
+    .ant-menu-item-selected,
+    .ant-menu-item-selected:hover {
+      background: var(--ui-bg-selected);
+      color: #e6f4ff;
+
+      > a {
+        color: #e6f4ff;
+      }
+
+      .anticon {
+        color: var(--ui-link);
+      }
+    }
+  }
+
+  .sider.light .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    color: var(--ui-text-primary);
+  }
+
+  .sider.light .ant-menu-inline-collapsed > .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    background: var(--ui-bg-selected);
+
+    .anticon,
+    .custom-icon path {
+      color: var(--ui-link);
+      fill: var(--ui-link);
+    }
+  }
+}
