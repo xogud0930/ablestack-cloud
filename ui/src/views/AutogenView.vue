@@ -866,8 +866,7 @@
         />
         <a-pagination
           v-if="$route.meta?.name !== 'vmgroup' || listLoadedScope"
-          class="row-element"
-          style="margin-top: 10px"
+          class="row-element list-pagination"
           size="small"
           :current="page"
           :pageSize="pageSize"
@@ -3315,6 +3314,18 @@ export default {
 
 .row-element {
   margin-bottom: 10px;
+}
+
+/* keep the page controls in view; ListView lifts its sticky horizontal scrollbar above this bar */
+.list-pagination {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin: 0 -24px;
+  padding: 10px 24px;
+  background: var(--ui-bg-page);
+  /* also covers the scroll area's 16px bottom padding, where rows would otherwise show below the bar */
+  box-shadow: 0 16px 0 var(--ui-bg-page);
 }
 
 .ant-breadcrumb {

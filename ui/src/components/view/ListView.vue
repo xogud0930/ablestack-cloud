@@ -16,14 +16,16 @@
 // under the License.
 
 <template>
-  <div class="list-view-table-wrapper" :class="{ 'autoscale-list': $route.name === 'autoscalevmgroup' }" @contextmenu="handleGlobalContextMenu">
+  <div ref="tableWrapper" class="list-view-table-wrapper" :class="{ 'autoscale-list': $route.name === 'autoscalevmgroup' }" @contextmenu="handleGlobalContextMenu">
     <a-table
       size="middle"
       :loading="loading"
       :locale="emptyText ? { emptyText } : undefined"
-      :columns="isOrderUpdatable() ? columns : columns.filter(x => x.dataIndex !== 'order')"
+      :columns="tableColumns"
       :dataSource="items"
-      :scroll="['autoscalevmgroup', 'affinitygroup'].includes($route.name) ? { x: 980 } : undefined"
+      :scroll="{ x: tableScrollX }"
+      :sticky="tableSticky"
+      tableLayout="auto"
       :rowKey="listRowKey"
       :pagination="false"
       :rowSelection="explicitlyAllowRowSelection || enableGroupAction() || $route.name === 'event' ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: record => ({ disabled: selectionDisabled(record) }), columnWidth: 30} : null"
@@ -31,7 +33,7 @@
       :customRow="snapshotRowEvents"
       @change="handleTableChange"
       @resizeColumn="handleResizeColumn"
-      :style="{ 'overflow-y': this.$route.name === 'usage' ? 'hidden' : 'auto' }"
+      :style="this.$route.name === 'usage' ? { 'overflow-y': 'hidden' } : undefined"
     >
     <template #customFilterDropdown>
       <div
@@ -1217,6 +1219,8 @@ import moment from 'moment-timezone'
 import { timeZoneName } from '@/utils/timezone'
 import { FileTextOutlined } from '@ant-design/icons-vue'
 
+let headerMeasureContext = null
+
 export default {
   name: 'ListView',
   components: {
@@ -1280,6 +1284,7 @@ export default {
   inject: ['parentFetchData', 'parentToggleLoading'],
   data () {
     return {
+      stickyOffsets: { header: 0, scroll: 0 },
       selectedRowKeys: [],
       editableValueKey: null,
       editableValue: '',
@@ -1366,7 +1371,38 @@ export default {
   created () {
     this.getUsageTypes()
   },
+  mounted () {
+    this.stickyContainer = this.$refs.tableWrapper?.closest('.layout-content')
+    if (this.stickyContainer) this.stickyContainer.addEventListener('scroll', this.updateStickyOffsets, { passive: true })
+    window.addEventListener('resize', this.updateStickyOffsets)
+    this.$nextTick(this.updateStickyOffsets)
+  },
+  beforeUnmount () {
+    if (this.stickyContainer) this.stickyContainer.removeEventListener('scroll', this.updateStickyOffsets)
+    window.removeEventListener('resize', this.updateStickyOffsets)
+  },
   computed: {
+    // the sticky header is a separate table, so body cells carry the header's one-line width as their minimum
+    tableColumns () {
+      const columns = this.isOrderUpdatable() ? this.columns : this.columns.filter(x => x.dataIndex !== 'order')
+      return columns.map(col => {
+        if (col.width) return col
+        const minWidth = this.headerMinWidth(col) + 'px'
+        return { ...col, customCell: () => ({ style: { minWidth } }) }
+      })
+    },
+    // beyond the sum of header widths the table scrolls sideways instead of squeezing columns
+    tableScrollX () {
+      if (['autoscalevmgroup', 'affinitygroup'].includes(this.$route.name)) return 980
+      return this.tableColumns.reduce((sum, col) => sum + (Number(col.width) || this.headerMinWidth(col)), 30)
+    },
+    tableSticky () {
+      return {
+        offsetHeader: this.stickyOffsets.header,
+        offsetScroll: this.stickyOffsets.scroll,
+        getContainer: () => this.stickyContainer || window
+      }
+    },
     isSshKeyPairList () { return this.resourcePath ? this.resourcePath === '/ssh' : /^\/ssh(?:\/|$)/.test(this.$route.path) },
     hasSelected () {
       return this.selectedRowKeys.length > 0
@@ -1425,6 +1461,29 @@ export default {
     }
   },
   methods: {
+    headerMinWidth (col) {
+      const title = typeof col.title === 'string' ? col.title : ''
+      if (!title) return 80
+      if (!headerMeasureContext) {
+        headerMeasureContext = document.createElement('canvas').getContext('2d')
+        headerMeasureContext.font = `600 13px ${getComputedStyle(document.body).fontFamily}`
+      }
+      // cell padding 16px each side, plus the sort arrows
+      const width = Math.ceil(headerMeasureContext.measureText(title).width) + 32 + (col.sorter ? 24 : 0)
+      return Math.max(80, width)
+    },
+    // the header sticks under the pinned toolbar and the horizontal scrollbar above the pinned pagination
+    updateStickyOffsets () {
+      const container = this.stickyContainer
+      if (!container) return
+      const top = container.getBoundingClientRect().top
+      const toolbar = container.querySelector('.breadcrumb-card')
+      const header = toolbar ? Math.max(0, Math.round(toolbar.getBoundingClientRect().bottom - top)) : 0
+      const scroll = container.querySelector('.list-pagination')?.offsetHeight || 0
+      if (header !== this.stickyOffsets.header || scroll !== this.stickyOffsets.scroll) {
+        this.stickyOffsets = { header, scroll }
+      }
+    },
     cniDetailLink,
     sshKeyPairLink,
     canLinkProject (record) {
@@ -1986,7 +2045,13 @@ export default {
   margin: 0;
 }
 
-:deep(.ant-table-tbody)>tr>td, :deep(.ant-table-thead)>tr>th {
+.list-view-table-wrapper .ant-table-thead > tr > th {
+  white-space: nowrap;
+}
+
+/* Korean breaks between words; a token longer than the column may still break anywhere */
+.list-view-table-wrapper .ant-table-tbody > tr > td {
+  word-break: keep-all;
   overflow-wrap: anywhere;
 }
 

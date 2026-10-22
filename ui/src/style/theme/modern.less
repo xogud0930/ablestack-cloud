@@ -444,7 +444,8 @@ html body {
     border: 1px solid var(--ui-border);
     border-radius: @modern-radius-lg;
     box-shadow: @modern-surface-shadow;
-    overflow: hidden;
+    // clip, not hidden: hidden makes the table a scroll container and breaks the sticky header
+    overflow: clip;
   }
 
   .ant-table-thead > tr > th {
