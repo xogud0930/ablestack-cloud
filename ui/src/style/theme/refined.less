@@ -566,6 +566,49 @@ html.theme-refined body {
     box-shadow: 0 0 0 3px fade(@refined-primary, 25%) !important;
   }
 
+  // the ring belongs to the affix wrapper; the inner input drawing its own made a second, inset ring
+  .ant-input-affix-wrapper .ant-input:focus {
+    box-shadow: none !important;
+  }
+
+  // login: neutral page with surface-filled fields (dark-mode.less paints the layout navy)
+  .user-layout {
+    background: var(--ui-bg-page);
+  }
+
+  .user-layout-login {
+    // the tab pane clips by default, which cut the focus ring at the field's left and right edges
+    .ant-tabs,
+    .ant-tabs-content-holder {
+      overflow: visible;
+    }
+
+    // fields sit straight on the page, without the pane's own panel behind them
+    .ant-tabs-content-holder,
+    .ant-tabs-tabpane {
+      background: transparent;
+    }
+
+    .ant-input-affix-wrapper {
+      background: var(--ui-bg-surface);
+      border-color: var(--ui-border);
+
+      .ant-input {
+        background: transparent;
+      }
+    }
+
+    .ant-input-affix-wrapper-focused,
+    .ant-input-affix-wrapper:hover {
+      border-color: @refined-primary;
+    }
+
+    .ant-input-prefix {
+      margin-right: 8px;
+      color: var(--ui-text-muted);
+    }
+  }
+
   // alerts: no border or drop shadow, rounded tinted panel
   .ant-alert {
     border-color: transparent;
