@@ -900,6 +900,27 @@ html.theme-refined body {
     backdrop-filter: blur(24px) saturate(180%);
   }
 
+  // dropdown rows: inset rounded rows like the right-click menu; the selected row is a neutral fill with a bold label
+  .ant-dropdown-menu {
+    padding: 6px;
+  }
+
+  .ant-dropdown-menu-item,
+  .ant-dropdown-menu-submenu-title {
+    border-radius: 6px;
+
+    // modern.less and antd tint hover blue; keep it neutral like the other menus
+    &:hover {
+      background: var(--ui-bg-hover) !important;
+    }
+  }
+
+  .ant-dropdown-menu-item-selected {
+    color: var(--ui-text-primary) !important;
+    font-weight: 600;
+    background: var(--ui-bg-selected) !important;
+  }
+
   // right-click resource menu: same surface as dropdowns, rounder rows
   .resource-context-menu {
     padding: 6px;
