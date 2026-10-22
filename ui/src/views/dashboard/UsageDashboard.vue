@@ -24,7 +24,7 @@
           <div class="center">
             <h3>
               <dashboard-outlined /> {{ $t('label.resources') }}
-              <span style="float: right" v-if="showProject">
+              <span class="dashboard-card-menu" v-if="showProject">
                 <a-dropdown>
                   <template #overlay>
                     <a-menu>
@@ -173,7 +173,7 @@
           </div>
         </template>
         <a-divider style="margin: 6px 0px; border-width: 0px"/>
-        <a-row>
+        <a-row :gutter="[10, 10]">
           <a-col :span="12">
             <router-link :to="{ path: '/vm', query: { state: 'running', filter: 'running' } }">
               <a-statistic
@@ -199,7 +199,7 @@
             </router-link>
           </a-col>
         </a-row>
-        <a-divider style="margin: 1px 0px; border-width: 0px;"/>
+        <a-divider style="margin: 12px 0px 1px; border-width: 0px;"/>
         <div
           v-for="usageType in ['vm', 'cpu', 'memory', 'gpu', 'project']"
           :key="usageType">
@@ -656,6 +656,10 @@ export default {
     overflow-x:hidden;
     overflow-y: scroll;
     max-height: 420px;
+  }
+
+  .dashboard-card-menu {
+    float: right;
   }
 
   .center {

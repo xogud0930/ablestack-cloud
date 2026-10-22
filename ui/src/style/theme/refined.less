@@ -452,6 +452,7 @@ html.theme-refined body {
 
   .capacity-dashboard {
     .dashboard-card,
+    .dashboard-compute,
     .dashboard-storage,
     .dashboard-event {
       border: 0;
@@ -501,6 +502,19 @@ html.theme-refined body {
     .ant-statistic-content:has(.ant-badge-count[title='!']) .ant-statistic-content-prefix {
       color: #ffffff;
       background: #ff3b30;
+    }
+
+    // running / stopped VMs: tile in the state color, the status dot turns white
+    .ant-statistic-content-prefix:has(.ant-badge-status-success) {
+      background: #34c759;
+    }
+
+    .ant-statistic-content-prefix:has(.ant-badge-status-error) {
+      background: #ff3b30;
+    }
+
+    .ant-statistic-content-prefix .ant-badge-status-dot {
+      background: #ffffff;
     }
 
     .ant-progress-inner {
@@ -1072,6 +1086,7 @@ html.theme-refined.dark-mode body {
 
   .ant-card-bordered,
   .capacity-dashboard .dashboard-card,
+  .capacity-dashboard .dashboard-compute,
   .capacity-dashboard .dashboard-storage,
   .capacity-dashboard .dashboard-event,
   .list-view-table-wrapper .ant-table,

@@ -42,6 +42,13 @@ html body {
     box-shadow: none;
   }
 
+  // project context switches the sider to the dark theme; dark mode paints its menu a different
+  // color than the sider, so the column changed color where the menu ended
+  .sider.dark .ant-layout-sider-children,
+  .sider.dark .ant-menu {
+    background: transparent;
+  }
+
   .sider.light {
     border-right: 1px solid var(--ui-border);
   }
@@ -247,6 +254,7 @@ html body {
     }
 
     .dashboard-card,
+    .dashboard-compute,
     .dashboard-storage,
     .dashboard-event {
       flex: 1;
@@ -258,6 +266,7 @@ html body {
     }
 
     // long lists scroll inside the card instead of stretching the row
+    .dashboard-compute,
     .dashboard-storage,
     .dashboard-event {
       position: relative;
@@ -272,6 +281,43 @@ html body {
       // ChartCard sizes its content at 100%, which overflows once the body has a fixed height
       .chart-card-content {
         height: auto;
+      }
+    }
+
+    // the bottom fades so a cut-off list reads as scrollable; the padding keeps the last row clear of it
+    .dashboard-compute > .ant-card-body,
+    .dashboard-storage > .ant-card-body {
+      padding-bottom: 28px;
+      mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+    }
+
+    // card menu (project dashboard ⋮) sits at the right edge of the title row
+    .chart-card-title h3:has(.dashboard-card-menu) {
+      display: flex;
+      flex: 1;
+      align-items: center;
+    }
+
+    .dashboard-card-menu {
+      margin-left: auto;
+
+      // components.less paints every non-primary button with a surface and border
+      .ant-btn.ant-btn-text:not([disabled]) {
+        color: var(--ui-text-muted);
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+
+        &:hover,
+        &.ant-dropdown-open {
+          color: var(--ui-text-primary);
+          background: var(--ui-bg-hover);
+        }
+
+        .anticon {
+          margin-right: 0;
+          color: inherit;
+        }
       }
     }
 
@@ -406,6 +452,29 @@ html body {
     // host alerts: drop the ✓ / ! badge and show the state through the icon tile color
     .ant-statistic-content-prefix .ant-badge {
       display: none;
+    }
+
+    // running / stopped VMs: the status dot becomes the tile's icon and the tile takes its color
+    .ant-statistic-content-prefix .status .ant-badge {
+      display: inline-flex;
+    }
+
+    .ant-statistic-content-prefix .ant-badge-status-dot {
+      top: 0;
+      width: 10px;
+      height: 10px;
+    }
+
+    .ant-statistic-content-prefix .ant-badge-status-text {
+      display: none;
+    }
+
+    .ant-statistic-content-prefix:has(.ant-badge-status-success) {
+      background: var(--ui-success-bg);
+    }
+
+    .ant-statistic-content-prefix:has(.ant-badge-status-error) {
+      background: var(--ui-error-bg);
     }
 
     .ant-statistic-content:has(.ant-badge-count[title='✓']) .ant-statistic-content-prefix {
