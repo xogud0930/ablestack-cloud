@@ -3334,7 +3334,7 @@ export default {
 
 .autogen-action-dropdown__content {
   width: 272px;
-  max-height: ~"min(70vh, 640px)";
+  max-height: min(70vh, 640px);
   overflow-x: hidden;
   overflow-y: auto;
   padding: 4px;
