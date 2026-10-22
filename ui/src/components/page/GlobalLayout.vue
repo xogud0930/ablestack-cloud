@@ -131,8 +131,10 @@
             </a-button>
 
             <a-layout-content
+              ref="contentRef"
               class="layout-content"
-              :class="{ 'is-header-fixed': fixedHeader }">
+              :class="{ 'is-header-fixed': fixedHeader }"
+              @scroll.passive="updateContentScrolled">
               <slot />
             </a-layout-content>
 
@@ -197,7 +199,8 @@ export default {
       recalcTimer: null,
       lastAffixHeaderPx: -1,
       lastAffixContentPx: -1,
-      roAnnounce: null
+      roAnnounce: null,
+      contentScrolled: false
     }
   },
   computed: {
@@ -223,6 +226,7 @@ export default {
     mainMenu (newMenu) { this.menus = newMenu.find(item => item.path === '/').children },
     '$store.getters.countNotify' (n) { this.showClear = !!(n && n > 0) },
     isShutdown () { this.measureShutdown() },
+    $route () { this.$nextTick(this.updateContentScrolled) },
     readyForShutdownEnabled (enabled) {
       if (enabled) {
         this.startShutdownPolling()
@@ -292,10 +296,18 @@ export default {
     window.removeEventListener('auto-alert-banner:closed', this.onAutoBannerClosed)
     try { this.roAnnounce && this.roAnnounce.disconnect() } catch (_) {}
     document.body.classList.remove('dark')
+    document.documentElement.classList.remove('content-scrolled')
     if (this.recalcTimer) clearTimeout(this.recalcTimer)
     try { localStorage.setItem('autoAlertBanner.lastHeight', '0') } catch (_) {}
   },
   methods: {
+    // html.content-scrolled lets the header bars show their bottom edge only once content runs under them
+    updateContentScrolled () {
+      const scrolled = (this.$refs.contentRef?.$el?.scrollTop || 0) > 0
+      if (scrolled === this.contentScrolled) return
+      this.contentScrolled = scrolled
+      document.documentElement.classList.toggle('content-scrolled', scrolled)
+    },
     onResize () {
       const newAnnounceHeight = this.$refs.announceRef?.$el?.offsetHeight || 0
       if (newAnnounceHeight !== this.announceHeight) {

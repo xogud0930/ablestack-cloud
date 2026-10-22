@@ -1,0 +1,1004 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+/* Refined variant on top of modern.less. Active only with html.theme-refined (index.html sets it from ?ui=refined). */
+
+@refined-primary: #1890ff;
+@refined-radius-lg: 16px;
+@refined-radius: 8px;
+@refined-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
+
+// tokens live on body because tokens.less redefines them on body.dark-mode
+html.theme-refined:not(.dark-mode) body {
+  --ui-bg-page: #f5f5f7;
+  --ui-bg-surface: #ffffff;
+  --ui-bg-navigation: #f5f5f7;
+  --ui-bg-elevated: rgba(255, 255, 255, 0.88);
+  --ui-bg-hover: rgba(0, 0, 0, 0.04);
+  --ui-bg-selected: rgba(0, 0, 0, 0.07);
+  --ui-bg-disabled: rgba(0, 0, 0, 0.06);
+  --ui-border: rgba(0, 0, 0, 0.08);
+  --ui-border-strong: rgba(0, 0, 0, 0.16);
+  --ui-text-primary: #1d1d1f;
+  --ui-text-secondary: #424245;
+  --ui-text-muted: #6e6e73;
+  --ui-text-placeholder: #a1a1a6;
+  --refined-fill: rgba(0, 0, 0, 0.05);
+  --refined-fill-strong: rgba(0, 0, 0, 0.08);
+  --refined-segment: #ffffff;
+  --refined-tile: #f5f5f7;
+  --refined-chrome: rgba(245, 245, 247, 0.8);
+  --refined-sheet: #ffffff;
+  --refined-tooltip: rgba(29, 29, 31, 0.92);
+  // alerts: tinted fill, colored icon, neutral body text (--ui-*-text stays colored for error text, danger items, required marks)
+  --ui-info-bg: rgba(24, 144, 255, 0.08);
+  --ui-info-icon: #1890ff;
+  --refined-alert-text: #1d1d1f;
+  --ui-success-bg: rgba(52, 199, 89, 0.1);
+  --ui-success-icon: #248a3d;
+  --ui-warning-bg: rgba(255, 159, 10, 0.12);
+  --ui-warning-icon: #ff9500;
+  --ui-error-bg: rgba(255, 59, 48, 0.08);
+  --ui-error-icon: #d70015;
+  --ui-info-border: transparent;
+  --ui-success-border: transparent;
+  --ui-warning-border: transparent;
+  --ui-error-border: transparent;
+}
+
+html.theme-refined.dark-mode body {
+  --ui-bg-page: #111113;
+  --ui-bg-surface: #1c1c1e;
+  --ui-bg-navigation: #1a1a1c;
+  --ui-bg-elevated: rgba(44, 44, 46, 0.92);
+  --ui-bg-hover: rgba(255, 255, 255, 0.06);
+  --ui-bg-selected: rgba(255, 255, 255, 0.1);
+  --ui-bg-disabled: rgba(255, 255, 255, 0.1);
+  --ui-border: rgba(255, 255, 255, 0.09);
+  --ui-border-strong: rgba(255, 255, 255, 0.18);
+  --ui-text-primary: #f5f5f7;
+  --ui-text-secondary: #d1d1d6;
+  --ui-text-muted: #98989d;
+  --ui-text-placeholder: #6e6e73;
+  --refined-fill: rgba(255, 255, 255, 0.08);
+  --refined-fill-strong: rgba(255, 255, 255, 0.12);
+  --refined-segment: #636366;
+  --refined-tile: #2c2c2e;
+  --refined-chrome: rgba(17, 17, 19, 0.8);
+  --refined-sheet: #2c2c2e;
+  --refined-tooltip: #3a3a3c;
+  --ui-info-bg: rgba(64, 156, 255, 0.16);
+  --ui-info-icon: #409cff;
+  --refined-alert-text: #f5f5f7;
+  --ui-success-bg: rgba(48, 209, 88, 0.16);
+  --ui-success-icon: #30d158;
+  --ui-warning-bg: rgba(255, 179, 64, 0.16);
+  --ui-warning-icon: #ffb340;
+  --ui-error-bg: rgba(255, 105, 97, 0.16);
+  --ui-error-icon: #ff6961;
+  --ui-info-border: transparent;
+  --ui-success-border: transparent;
+  --ui-warning-border: transparent;
+  --ui-error-border: transparent;
+}
+
+html.theme-refined body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Apple SD Gothic Neo', Pretendard, 'Malgun Gothic', 'Segoe UI', sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+
+  .ant-layout,
+  .layout-content {
+    background: var(--ui-bg-page);
+  }
+
+  // sidebar: solid (nothing scrolls under it, and a translucent one leaves a gap below the menu), neutral selection with an accent icon
+  .sider.light {
+    background: var(--ui-bg-navigation);
+    border-right: 1px solid var(--ui-border);
+  }
+
+  .sider.light .ant-menu-item,
+  .sider.light .ant-menu-submenu-title {
+    color: var(--ui-text-primary);
+  }
+
+  .sider.light .ant-menu-item-selected,
+  .sider.light .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected,
+  .ant-menu-submenu-popup .ant-menu-vertical .ant-menu-item-selected,
+  .ant-menu-submenu-popup .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background: var(--ui-bg-selected);
+    color: var(--ui-text-primary);
+
+    &::before {
+      display: none;
+    }
+
+    a {
+      color: var(--ui-text-primary);
+    }
+
+    .anticon,
+    .custom-icon path {
+      color: @refined-primary;
+      fill: @refined-primary;
+    }
+  }
+
+  .sider.light .ant-menu-inline-collapsed > .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    background: var(--ui-bg-selected);
+  }
+
+  // the hover popup continues the sidebar, so it keeps the sidebar surface
+  .ant-menu-submenu-popup > .ant-menu {
+    background: var(--ui-bg-navigation);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16);
+  }
+
+  // dark-mode.less paints the inner menu and logo its own slate; let the sider color show through
+  .sider.light .ant-menu-light,
+  .sider.light .ant-menu-submenu > .ant-menu,
+  .sider.light .ant-menu-sub.ant-menu-inline,
+  .sider.light .logo {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .ant-menu-submenu-popup .ant-menu-item {
+    color: var(--ui-text-primary);
+  }
+
+  // header and page toolbar read as one translucent chrome tinted like the page
+  .sticky-header .ant-layout-header,
+  .sticky-header .ant-layout-header .header {
+    background: var(--refined-chrome);
+    backdrop-filter: blur(24px) saturate(180%);
+  }
+
+  .sticky-header .ant-layout-header {
+    border-bottom: 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .sticky-header .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    background: var(--refined-fill);
+    border-color: transparent !important;
+    border-radius: 8px;
+    box-shadow: none !important;
+  }
+
+  .sticky-header .ant-btn-primary {
+    border-radius: 8px;
+  }
+
+  // header actions: a 36px rounded hover target, centered in the bar, instead of a full-height block
+  .sticky-header .user-menu {
+    display: flex;
+    align-items: center;
+  }
+
+  // layout/ant.less sets these with .layout.ant-layout .header … (5 classes deep), so height needs !important
+  .sticky-header .user-menu .action,
+  .sticky-header .user-menu-dropdown {
+    height: 36px !important;
+    margin: 0 2px;
+    padding: 0 8px;
+    border-radius: 8px;
+
+    &:hover {
+      background: var(--refined-fill);
+    }
+
+    .avatar {
+      margin: 0 8px 0 0;
+    }
+  }
+
+  // the toolbar is affixed, so content scrolls under it
+  .breadcrumb-card.ant-card {
+    background: var(--refined-chrome);
+    border-bottom: 1px solid transparent;
+    // vars.less / dark-mode.less force card border colors with !important
+    border-bottom-color: transparent !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    > .ant-card-body {
+      padding: 12px 24px;
+    }
+
+    // one flex row: title cluster left, actions + search right; the template's inline offsets are dropped
+    > .ant-card-body > .ant-row:first-child {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 16px;
+
+      > .ant-col {
+        display: flex !important;
+        flex: 1 1 auto;
+        align-items: center;
+        min-width: 0;
+        max-width: none;
+        margin-top: 0 !important;
+        float: none !important;
+      }
+
+      > .ant-col:last-child {
+        flex: 0 1 auto;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+    }
+  }
+
+  // path items sit on the title line (32px) even when the accessories wrap below
+  .breadcrumb-card .ant-breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    color: var(--ui-text-muted);
+    font-size: 13px;
+
+    > span {
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      min-height: 32px;
+    }
+
+    > span:last-child {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .ant-breadcrumb-separator {
+      margin: 0 6px;
+      color: var(--ui-text-placeholder);
+    }
+
+    // narrow windows: the title stays on one line and its accessories wrap below it
+    > span:last-child .ant-breadcrumb-link {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      row-gap: 6px;
+      white-space: nowrap;
+    }
+
+    > span:last-child .ant-breadcrumb-link,
+    > span:last-child .ant-breadcrumb-link a {
+      color: var(--ui-text-primary);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 32px;
+    }
+
+    // title accessories (help, refresh, filter, switches) sit on the title's center line
+    > span:last-child .ant-breadcrumb-link > span[style*='margin-left'] {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+
+      > *,
+      > .ant-select,
+      > .ant-switch {
+        flex: none;
+        margin: 0 !important;
+      }
+    }
+
+    .anticon-question-circle {
+      color: var(--ui-text-placeholder);
+      font-size: 14px;
+    }
+  }
+
+  // compact gray controls next to the title
+  .breadcrumb-card .ant-breadcrumb .ant-btn-sm {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 8px;
+  }
+
+  .breadcrumb-card .ant-breadcrumb .ant-select-sm .ant-select-selector {
+    height: 28px;
+    padding: 0 10px;
+    align-items: center;
+    background: var(--refined-fill);
+    border-color: transparent !important;
+    border-radius: 8px;
+  }
+
+  .breadcrumb-card .ant-switch {
+    height: 24px;
+    min-height: 24px !important;
+    line-height: 24px;
+  }
+
+  // actions: rounded rects instead of pills
+  .breadcrumb-card .row-action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 0 !important;
+
+    .ant-btn {
+      margin-left: 0 !important;
+      border-radius: 8px;
+    }
+
+    .ant-btn-circle {
+      width: 32px;
+      border-radius: 8px;
+    }
+  }
+
+  .breadcrumb-card .autogen-action-dropdown__button {
+    border-radius: 8px;
+  }
+
+  // search: one filled field with the filter toggle inside it
+  .breadcrumb-card .ant-col:last-child > span[style*='table-cell'] {
+    display: inline-flex !important;
+    width: auto !important;
+    line-height: normal !important;
+  }
+
+  .breadcrumb-card .ant-input-search {
+    width: 260px;
+
+    .ant-input-wrapper {
+      background: var(--refined-fill);
+      border-radius: 8px;
+    }
+
+    .ant-input-affix-wrapper,
+    .ant-input,
+    .ant-input-group-addon,
+    .ant-input-group-addon .ant-btn,
+    .ant-input-search-button {
+      background: transparent;
+      border-color: transparent !important;
+      box-shadow: none;
+    }
+
+    .ant-input-group-addon .ant-btn,
+    .ant-input-search-button {
+      color: var(--ui-text-muted);
+      background: transparent !important;
+    }
+
+    .ant-input-wrapper:focus-within {
+      box-shadow: 0 0 0 3px fade(@refined-primary, 25%);
+    }
+  }
+
+  .breadcrumb-card .ant-input-affix-wrapper-focused {
+    box-shadow: none !important;
+  }
+
+  // surfaces: no borders, soft shadow, larger corners
+  .ant-card-bordered {
+    border: 0;
+    border-radius: @refined-radius-lg;
+    box-shadow: @refined-card-shadow;
+  }
+
+  // surface rule: a surface on the page floats (shadow, 16px), anything inside a surface is outlined (1px, 12px) or flat
+  .ant-card:not(.ant-card-bordered):has(.list-tree-view),
+  .summary-cards-pane,
+  .rack-visualization-card {
+    background: var(--ui-bg-surface);
+    border: 0;
+    border-radius: @refined-radius-lg;
+    box-shadow: @refined-card-shadow;
+  }
+
+  .ant-card .ant-card-bordered,
+  .summary-cards-pane .summary-group {
+    background: transparent;
+    border: 1px solid var(--ui-border);
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  // summary tiles sit on the outlined group as filled tiles, like the dashboard
+  .summary-cards-pane .summary-group .summary-mini-card {
+    background: var(--refined-tile);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  .summary-cards-pane .summary-group .summary-mini-card .ant-card-body {
+    background: transparent;
+  }
+
+  // a table inside a card is an inner list: no frame of its own, rows separated by lines
+  .ant-card .ant-table,
+  .ant-card .ant-tabs-tabpane .ant-table,
+  .ant-card .list-view-table-wrapper .ant-table {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ant-card .ant-table-footer {
+    background: transparent;
+  }
+
+  .capacity-dashboard {
+    .dashboard-card,
+    .dashboard-storage,
+    .dashboard-event {
+      border: 0;
+      border-radius: @refined-radius-lg;
+      box-shadow: @refined-card-shadow;
+    }
+
+    .chart-card-title,
+    .dashboard-event > .ant-card-body > .center:first-child {
+      border-bottom: 0;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .ant-statistic {
+      background: var(--refined-tile);
+      border: 0;
+      border-radius: 12px;
+    }
+
+    a:hover .ant-statistic {
+      background: var(--refined-fill-strong);
+    }
+
+    .ant-statistic-content {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    // settings-app style glyph tiles: solid color, white icon
+    .ant-statistic-content-prefix {
+      color: #ffffff;
+      background: @refined-primary;
+      border-radius: 9px;
+    }
+
+    .ant-statistic-content:has(.ant-badge-count[title='✓']) .ant-statistic-content-prefix {
+      color: #ffffff;
+      background: #34c759;
+    }
+
+    .ant-statistic-content:has(.ant-badge-count[title='!']) .ant-statistic-content-prefix {
+      color: #ffffff;
+      background: #ff3b30;
+    }
+
+    .ant-progress-inner {
+      background: var(--ui-bg-disabled);
+    }
+
+    .ant-progress-bg {
+      height: 6px !important;
+    }
+  }
+
+  .list-view-table-wrapper .ant-table,
+  .ant-tabs-tabpane .ant-table {
+    border: 0;
+    border-radius: @refined-radius-lg;
+    box-shadow: @refined-card-shadow;
+  }
+
+  .ant-table,
+  .ant-table-thead > tr > th {
+    background: var(--ui-bg-surface);
+  }
+
+  .ant-table-thead > tr > th {
+    color: var(--ui-text-muted);
+    font-size: 12px;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td {
+    background: var(--ui-bg-hover);
+  }
+
+  // controls: gray filled buttons, focus ring instead of a border change
+  .ant-btn {
+    border-radius: @refined-radius;
+  }
+
+  .ant-btn-default,
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-link):not(.ant-btn-text):not(.ant-btn-dangerous) {
+    color: var(--ui-text-primary);
+    background: var(--refined-fill);
+    border-color: transparent;
+
+    &:hover,
+    &:focus {
+      color: var(--ui-text-primary);
+      background: var(--refined-fill-strong);
+      border-color: transparent;
+    }
+  }
+
+  .ant-input,
+  .ant-input-affix-wrapper,
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector,
+  .ant-input-number,
+  .ant-picker {
+    border-radius: @refined-radius;
+  }
+
+  .ant-input:focus,
+  .ant-input-focused,
+  .ant-input-affix-wrapper-focused,
+  .ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+    box-shadow: 0 0 0 3px fade(@refined-primary, 25%) !important;
+  }
+
+  // alerts: no border or drop shadow, rounded tinted panel
+  .ant-alert {
+    border-color: transparent;
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .ant-alert:not(.ant-alert-banner) {
+    padding: 10px 14px;
+  }
+
+  .ant-alert-with-description:not(.ant-alert-banner) {
+    padding: 14px 16px;
+
+    .ant-alert-message {
+      font-weight: 600;
+    }
+  }
+
+  .ant-alert-description {
+    opacity: 0.85;
+  }
+
+  // dark-mode.less hardcodes alert colors in modals, popovers, the IP config tab and globally; the tokens win here
+  .ant-alert-info {
+    color: var(--refined-alert-text) !important;
+    background: var(--ui-info-bg) !important;
+    border-color: transparent !important;
+
+    .ant-alert-icon {
+      color: var(--ui-info-icon) !important;
+    }
+
+    .ant-alert-message,
+    .ant-alert-description {
+      color: var(--refined-alert-text) !important;
+    }
+  }
+
+  .ant-alert-success {
+    color: var(--refined-alert-text) !important;
+    background: var(--ui-success-bg) !important;
+    border-color: transparent !important;
+
+    .ant-alert-icon {
+      color: var(--ui-success-icon) !important;
+    }
+
+    .ant-alert-message,
+    .ant-alert-description {
+      color: var(--refined-alert-text) !important;
+    }
+  }
+
+  .ant-alert-warning {
+    color: var(--refined-alert-text) !important;
+    background: var(--ui-warning-bg) !important;
+    border-color: transparent !important;
+
+    .ant-alert-icon {
+      color: var(--ui-warning-icon) !important;
+    }
+
+    .ant-alert-message,
+    .ant-alert-description {
+      color: var(--refined-alert-text) !important;
+    }
+  }
+
+  .ant-alert-error {
+    color: var(--refined-alert-text) !important;
+    background: var(--ui-error-bg) !important;
+    border-color: transparent !important;
+
+    .ant-alert-icon {
+      color: var(--ui-error-icon) !important;
+    }
+
+    .ant-alert-message,
+    .ant-alert-description {
+      color: var(--refined-alert-text) !important;
+    }
+  }
+
+  .ant-switch-checked {
+    background: #34c759;
+  }
+
+  .ant-tag {
+    border-radius: 999px;
+    padding: 1px 10px;
+    font-weight: 500;
+  }
+
+  // neutral tag; :where keeps it below the preset colors and inline-colored tags
+  .ant-tag:where(:not(.ant-tag-has-color, .ant-tag-checkable)) {
+    color: var(--ui-text-secondary) !important;
+    background: var(--refined-fill) !important;
+    border-color: transparent !important;
+  }
+
+  // guest network addresses: filled chips instead of outlined boxes
+  .address-list {
+    border-top-color: var(--ui-border);
+  }
+
+  // pill like the tags inside it, so the corners stay concentric
+  .address-item {
+    padding: 3px 10px 3px 3px;
+    background: var(--refined-fill);
+    border: 0;
+    border-radius: 999px;
+  }
+
+  // card headers follow the card's corners and tone (dark-mode.less paints them per screen)
+  .ant-card-bordered > .ant-card-head {
+    background: transparent !important;
+    border-bottom-color: var(--ui-border) !important;
+    border-radius: @refined-radius-lg @refined-radius-lg 0 0;
+  }
+
+  // bordered descriptions: clip the label fill to the rounded frame
+  .ant-descriptions-bordered .ant-descriptions-view {
+    overflow: hidden;
+    border-color: var(--ui-border) !important;
+    border-radius: 12px;
+  }
+
+  .ant-descriptions-bordered .ant-descriptions-row,
+  .ant-descriptions-bordered .ant-descriptions-item-label,
+  .ant-descriptions-bordered .ant-descriptions-item-content {
+    border-color: var(--ui-border) !important;
+  }
+
+  .ant-descriptions-bordered .ant-descriptions-item-label {
+    background: var(--refined-fill) !important;
+  }
+
+  .ant-descriptions-bordered .ant-descriptions-item-content {
+    background: transparent !important;
+  }
+
+  // segmented controls: line tabs and radio-button groups
+  .ant-tabs-top > .ant-tabs-nav:not(.ant-tabs-card .ant-tabs-nav) {
+    &::before {
+      border-bottom: 0;
+    }
+
+    .ant-tabs-nav-list {
+      padding: 2px;
+      background: var(--refined-fill);
+      border-radius: 9px;
+    }
+
+    .ant-tabs-tab {
+      margin: 0;
+      padding: 5px 14px;
+      border-radius: 7px;
+    }
+
+    .ant-tabs-tab-active {
+      background: var(--refined-segment);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+      .ant-tabs-tab-btn {
+        color: var(--ui-text-primary);
+        font-weight: 600;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+  }
+
+  // side tabs (resource detail): sidebar-like list with a neutral pill
+  .ant-tabs-left > .ant-tabs-nav {
+    // keep the selected pill off the divider
+    padding-right: 12px;
+
+    .ant-tabs-nav-list {
+      gap: 2px;
+    }
+
+    .ant-tabs-tab {
+      margin: 0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: var(--ui-bg-hover);
+      }
+    }
+
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin: 0;
+    }
+
+    .ant-tabs-tab-active {
+      background: var(--ui-bg-selected);
+
+      .ant-tabs-tab-btn {
+        color: var(--ui-text-primary);
+        font-weight: 600;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+  }
+
+  .ant-tabs-left > .ant-tabs-content-holder {
+    border-left-color: var(--ui-border);
+  }
+
+  .ant-radio-group:has(> .ant-radio-button-wrapper) {
+    padding: 2px;
+    background: var(--refined-fill);
+    border-radius: 9px;
+  }
+
+  .ant-radio-button-wrapper {
+    background: transparent;
+    border: 0;
+    border-radius: 7px !important;
+
+    &::before {
+      display: none !important;
+    }
+  }
+
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    color: var(--ui-text-primary);
+    background: var(--refined-segment);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  // overlays: blurred backdrop, translucent menus
+  .ant-modal-mask {
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(6px);
+  }
+
+  // sheets are solid; tokens.less gives them the translucent menu surface
+  .ant-modal .ant-modal-content,
+  .ant-modal .ant-modal-header,
+  .ant-modal .ant-modal-footer,
+  .ant-drawer .ant-drawer-content,
+  .ant-drawer .ant-drawer-header {
+    background: var(--refined-sheet);
+  }
+
+  .ant-modal-content,
+  .ant-drawer-content {
+    border-radius: 18px;
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 24px 64px rgba(0, 0, 0, 0.24);
+  }
+
+  // wizard step panels: a grouped inset instead of a dashed box, nested cards flattened
+  .ant-modal .steps-content,
+  .ant-modal .form-content {
+    background: var(--ui-bg-page);
+    border: 0;
+    border-radius: 12px;
+  }
+
+  .ant-modal .ant-card {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .ant-modal .ant-card .ant-card {
+    background: transparent;
+  }
+
+  .ant-modal-title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .ant-dropdown-menu,
+  .ant-select-dropdown,
+  .ant-popover-inner {
+    background: var(--ui-bg-elevated);
+    border-radius: 12px;
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(24px) saturate(180%);
+  }
+
+  // right-click resource menu: same surface as dropdowns, rounder rows
+  .resource-context-menu {
+    padding: 6px;
+    background: var(--ui-bg-elevated);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 0 0 0.5px var(--ui-border-strong), 0 16px 40px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(24px) saturate(180%);
+
+    .resource-action-menu__title {
+      padding: 4px 10px 8px;
+      background: transparent;
+      font-size: 13px;
+      border-bottom-color: var(--ui-border);
+    }
+
+    .resource-action-menu__list.ant-menu .ant-menu-item-group-title {
+      padding: 8px 10px 2px;
+      color: var(--ui-text-muted);
+      font-size: 11px;
+    }
+
+    .resource-action-menu__list.ant-menu .ant-menu-item {
+      border-radius: 6px;
+    }
+
+    .resource-action-menu__item--danger,
+    .resource-action-menu__item--danger .anticon,
+    .resource-action-menu__item--danger svg {
+      color: var(--ui-error-icon) !important;
+    }
+  }
+
+  .ant-tooltip-inner,
+  .ant-tooltip-arrow-content {
+    background-color: var(--refined-tooltip);
+  }
+
+  .ant-dropdown-menu-item-divider,
+  .ant-dropdown-menu-submenu-title-divider {
+    background-color: var(--ui-border);
+  }
+
+  .ant-tooltip-inner {
+    border-radius: 8px;
+  }
+}
+
+// scroll edge: the lowest bar gets a hairline only once content scrolls under it (GlobalLayout sets html.content-scrolled)
+html.theme-refined.content-scrolled body {
+  .breadcrumb-card.ant-card {
+    border-bottom-color: var(--ui-border) !important;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  &:not(:has(.breadcrumb-card)) .sticky-header .ant-layout-header {
+    box-shadow: 0 1px 0 var(--ui-border), 0 1px 8px rgba(0, 0, 0, 0.04);
+  }
+}
+
+// dark: shadows read as smudges, so surfaces separate by tone only
+html.theme-refined.dark-mode body {
+  .ant-card-bordered,
+  .capacity-dashboard .dashboard-card,
+  .capacity-dashboard .dashboard-storage,
+  .capacity-dashboard .dashboard-event,
+  .list-view-table-wrapper .ant-table,
+  .ant-tabs-tabpane .ant-table {
+    box-shadow: none;
+  }
+
+  .ant-card,
+  .ant-card-body {
+    background: var(--ui-bg-surface);
+  }
+
+  // dark-mode.less paints rows, cells and menus slate blue; keep them on the neutral surface
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td.ant-table-cell {
+    background: var(--ui-bg-surface);
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    background: #262628 !important;
+  }
+
+  // infra summary paints its own navy dark theme (.is-dark) with high specificity
+  .infra-summary-root.is-dark {
+    .summary-cards-pane,
+    .rack-visualization-card {
+      background: var(--ui-bg-surface) !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .summary-group {
+      background: transparent !important;
+      border-color: var(--ui-border) !important;
+    }
+
+    .summary-group-header,
+    .rack-visualization-card .ant-card-head {
+      background: transparent !important;
+      border-bottom-color: var(--ui-border) !important;
+    }
+  }
+
+  .resource-context-menu .resource-action-menu,
+  .resource-context-menu .resource-action-menu__title,
+  .resource-context-menu .resource-action-menu__list.ant-menu {
+    background: transparent !important;
+  }
+}
+
+// preset tag colors as tinted capsules; !important because dark-mode.less hardcodes them per screen
+.refined-tag(@name, @base, @text, @dark) {
+  html.theme-refined:not(.dark-mode) body .ant-tag-@{name} {
+    color: @text !important;
+    background: fade(@base, 12%) !important;
+    border-color: transparent !important;
+  }
+
+  html.theme-refined.dark-mode body .ant-tag-@{name} {
+    color: @dark !important;
+    background: fade(@dark, 18%) !important;
+    border-color: transparent !important;
+  }
+}
+
+.refined-tag(blue, #1890ff, #0a6ad1, #409cff);
+.refined-tag(processing, #1890ff, #0a6ad1, #409cff);
+.refined-tag(green, #34c759, #248a3d, #30d158);
+.refined-tag(success, #34c759, #248a3d, #30d158);
+.refined-tag(lime, #34c759, #248a3d, #30d158);
+.refined-tag(cyan, #32ade6, #0071a4, #64d2ff);
+.refined-tag(purple, #af52de, #8944ab, #bf5af2);
+.refined-tag(geekblue, #5856d6, #3634a3, #7d7aff);
+.refined-tag(magenta, #ff2d55, #d30f45, #ff375f);
+.refined-tag(red, #ff3b30, #d70015, #ff6961);
+.refined-tag(error, #ff3b30, #d70015, #ff6961);
+.refined-tag(volcano, #ff6b35, #c43e00, #ff8a5c);
+.refined-tag(orange, #ff9500, #c93400, #ffb340);
+.refined-tag(warning, #ff9500, #c93400, #ffb340);
+.refined-tag(gold, #ffcc00, #a05a00, #ffd60a);

@@ -24,6 +24,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link id="favicon" rel="icon" href="<%= BASE_URL %>assets/ablestack-favicon.png">
   <title id="title"></title>
+  <script>
+    // design PoC: ?ui=refined turns the refined variant on, ?ui=modern turns it off; the choice is remembered
+    (function () {
+      try {
+        var ui = new URLSearchParams(location.search).get('ui')
+        if (ui) localStorage.setItem('ui-variant', ui)
+        if (localStorage.getItem('ui-variant') === 'refined') document.documentElement.classList.add('theme-refined')
+      } catch (e) {}
+    })()
+  </script>
   <style>
     .loader {
       border: 16px solid #F3F3F3;
