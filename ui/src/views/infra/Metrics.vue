@@ -223,11 +223,6 @@ export default {
     background-color: #f9f9f9;
   }
   .metric-card {
-    margin-left: -24px;
-    margin-right: -24px;
-    margin-top: -16px;
-    margin-bottom: 12px;
     overflow-y: auto;
-    margin-bottom: 100px;
   }
 </style>
