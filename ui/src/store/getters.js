@@ -18,6 +18,7 @@
 const getters = {
   device: state => state.app.device,
   version: state => state.app.version,
+  bannerHeight: state => state.app.bannerHeight,
   theme: state => state.app.theme,
   color: state => state.app.color,
   metrics: state => state.app.metrics,

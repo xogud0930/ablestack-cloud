@@ -56,7 +56,8 @@ const app = {
     vueVersion: '',
     faviconStateInterval: '',
     faviconStateCapacity: '',
-    allProjects: []
+    allProjects: [],
+    bannerHeight: 0
   },
   mutations: {
     SET_SIDEBAR_TYPE: (state, type) => {
@@ -145,6 +146,9 @@ const app = {
     },
     SET_SHUTDOWN_TRIGGERED: (state, shutdownTriggered) => {
       state.shutdownTriggered = shutdownTriggered
+    },
+    SET_BANNER_HEIGHT: (state, bannerHeight) => {
+      state.bannerHeight = bannerHeight
     },
     SET_READY_FOR_SHUTDOWN_POLLING_JOB: (state, readyForShutdownPollingJob) => {
       state.readyForShutdownPollingJob = readyForShutdownPollingJob

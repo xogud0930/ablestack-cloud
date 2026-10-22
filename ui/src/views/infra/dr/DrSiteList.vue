@@ -21,7 +21,7 @@
     <p v-if="listRefreshFailed" role="status">{{ $t('message.list.refresh.stale') }}</p>
     <a-affix
       :key="'affix-' + showSearchFilters"
-      :offsetTop="this.$store.getters.maintenanceInitiated || this.$store.getters.shutdownTriggered ? 103 : 78">
+      :offsetTop="78 + $store.getters.bannerHeight">
       <a-card class="breadcrumb-card" style="z-index: 10">
         <a-row>
           <a-col

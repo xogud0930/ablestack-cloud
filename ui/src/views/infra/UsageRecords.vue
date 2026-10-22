@@ -16,7 +16,7 @@
 // under the License.
 
 <template>
-  <a-affix :offsetTop="this.$store.getters.shutdownTriggered ? 103 : 78">
+  <a-affix :offsetTop="78 + $store.getters.bannerHeight">
     <a-card class="breadcrumb-card">
       <a-row>
         <a-col

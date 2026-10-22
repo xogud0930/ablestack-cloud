@@ -343,6 +343,7 @@ export default {
       const next = this.announceHeight + this.autoBannerHeight + this.shutdownHeight
       if (next === this.combinedBannerHeight) return
       this.combinedBannerHeight = next
+      this.$store.commit('SET_BANNER_HEIGHT', next)
       this.updateAffixTopVars()
     },
     updateAffixTopVars () {
