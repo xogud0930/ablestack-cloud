@@ -214,13 +214,23 @@ a {
 
 .ant-menu-item:hover,
 .ant-menu-item-active,
-.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
-.ant-menu-submenu-active,
 .ant-menu-submenu-title:hover
 {
   color: @primary-color;
 
   .custom-icon path {
+    color: @primary-color;
+  }
+}
+
+// a submenu stays active while any child is hovered; tint only its own title icon,
+// not the custom icons (e.g. Kubernetes) of the children
+.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+.ant-menu-submenu-active
+{
+  color: @primary-color;
+
+  > .ant-menu-submenu-title .custom-icon path {
     color: @primary-color;
   }
 }
