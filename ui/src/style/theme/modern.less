@@ -878,6 +878,95 @@ html body {
     border-color: var(--ui-border) !important;
   }
 
+  // the theme's 8px base radius turned 16px checkboxes into circles that read as radios
+  .ant-checkbox-inner,
+  .ant-checkbox-checked::after {
+    border-radius: 4px;
+  }
+
+  // legacy dialogs get the MOLD-DIALOG-1.0 chrome: a divided header, a body that scrolls between,
+  // and the form's own button row (.action-button) pinned as the footer
+  .mold-dialog:not(.mold-dialog-standard) {
+    .ant-modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--ui-border);
+    }
+
+    .ant-modal-close-x {
+      width: 54px;
+      height: 54px;
+      line-height: 54px;
+    }
+
+    // sticky works inside whichever wrapper holds the form (form, spin container, tab pane)
+    .ant-modal-body .action-button {
+      position: sticky;
+      bottom: -24px;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      margin: 24px -24px -24px;
+      padding: 14px 24px;
+      background: var(--ui-bg-elevated);
+      border-top: 1px solid var(--ui-border);
+
+      button,
+      a.ant-btn {
+        margin: 0;
+      }
+    }
+
+    // tabbed forms: the pane drew a page-surface panel in dark mode and clipped the footer's bleed
+    .ant-modal-body .ant-tabs:has(.action-button),
+    .ant-modal-body .ant-tabs:has(.action-button) .ant-tabs-content-holder {
+      overflow: visible;
+      background: transparent;
+    }
+
+    .ant-modal-body .ant-tabs-content-holder :is(.ant-tabs-tabpane, .ant-spin-nested-loading, .ant-spin-container) {
+      background: transparent;
+    }
+
+    // button rows nested in cards / tables inside a dialog are not the dialog footer
+    .ant-card .action-button,
+    .ant-table .action-button {
+      position: static;
+      margin: 0;
+      padding: 12px 0 0;
+      background: transparent;
+      border-top: 0;
+    }
+
+    .ant-btn-primary:not(:disabled) {
+      color: var(--ui-action-primary-text);
+      background: var(--ui-action-primary-bg);
+      border-color: var(--ui-action-primary-bg);
+
+      &:hover,
+      &:focus {
+        background: var(--ui-action-primary-hover);
+        border-color: var(--ui-action-primary-hover);
+      }
+
+      &.ant-btn-dangerous {
+        background: var(--ui-action-danger-bg);
+        border-color: var(--ui-action-danger-bg);
+      }
+    }
+  }
+
+  // notices placed under a field (e.g. the network offering warning) sit apart from the control
+  .ant-form-item-control-input-content > * + .ant-alert {
+    margin-top: 8px;
+  }
+
+  .ant-form-item-control-input-content > .ant-alert:not(.ant-alert-with-description) {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
   // antd shades the fixed-header scrollbar gutter with a light 1px shadow (a white line in dark mode)
   .ant-table-thead > tr > th.ant-table-cell-scrollbar {
     box-shadow: none;

@@ -913,6 +913,11 @@ html.theme-refined body {
     background: var(--refined-sheet);
   }
 
+  // the pinned form footer must be as solid as the sheet, or fields show through it
+  .mold-dialog:not(.mold-dialog-standard) .ant-modal-body .action-button {
+    background: var(--refined-sheet);
+  }
+
   .ant-modal-content,
   .ant-drawer-content {
     border-radius: 18px;
