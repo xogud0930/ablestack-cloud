@@ -20,7 +20,7 @@
     v-show="isVisible"
     class="bottom-activity-panel"
     :class="{ 'is-collapsed': collapsed, 'is-resizing': resizing }"
-    :style="{ height: currentHeight + 'px' }"
+    :style="{ height: currentHeight + 'px', '--activity-table-body-height': tableBodyHeight + 'px' }"
     aria-label="Activity panel">
     <div
       class="bottom-activity-panel__resize-handle"
@@ -142,32 +142,32 @@ export default {
       resizeStartHeight: DEFAULT_HEIGHT,
       resizeStartY: 0,
       eventColumns: [
-        { title: this.$t('label.level'), dataIndex: 'level', key: 'level', width: 80, ellipsis: true },
+        { title: this.$t('label.level'), dataIndex: 'level', key: 'level', width: 72, ellipsis: true },
         { title: this.$t('label.type'), dataIndex: 'type', key: 'type', width: 150, ellipsis: true },
-        { title: this.$t('label.state'), dataIndex: 'state', key: 'state', width: 100, ellipsis: true },
-        { title: this.$t('label.description'), dataIndex: 'description', key: 'description', width: 360, ellipsis: true },
-        { title: this.$t('label.resource'), dataIndex: 'resourcename', key: 'resourcename', width: 160, ellipsis: true },
-        { title: this.$t('label.username'), dataIndex: 'username', key: 'username', width: 120, ellipsis: true },
-        { title: this.$t('label.account'), dataIndex: 'account', key: 'account', width: 120, ellipsis: true },
-        { title: this.$t('label.domain'), dataIndex: 'domain', key: 'domain', width: 120, ellipsis: true },
+        { title: this.$t('label.state'), dataIndex: 'state', key: 'state', width: 96, ellipsis: true },
+        { title: this.$t('label.description'), dataIndex: 'description', key: 'description', ellipsis: true },
+        { title: this.$t('label.resource'), dataIndex: 'resourcename', key: 'resourcename', width: 150, ellipsis: true },
+        { title: this.$t('label.username'), dataIndex: 'username', key: 'username', width: 110, ellipsis: true },
+        { title: this.$t('label.account'), dataIndex: 'account', key: 'account', width: 110, ellipsis: true },
+        { title: this.$t('label.domain'), dataIndex: 'domain', key: 'domain', width: 100, ellipsis: true },
         {
           title: this.$t('label.created'),
           dataIndex: 'created',
           key: 'created',
-          width: 170,
+          width: 190,
           ellipsis: true,
           customRender: ({ text }) => this.formatDate(text)
         }
       ],
       alertColumns: [
         { title: this.$t('label.name'), dataIndex: 'name', key: 'name', width: 180, ellipsis: true },
-        { title: this.$t('label.description'), dataIndex: 'description', key: 'description', width: 420, ellipsis: true },
+        { title: this.$t('label.description'), dataIndex: 'description', key: 'description', ellipsis: true },
         { title: this.$t('label.type'), dataIndex: 'type', key: 'type', width: 120, ellipsis: true },
         {
           title: this.$t('label.sent'),
           dataIndex: 'sent',
           key: 'sent',
-          width: 170,
+          width: 190,
           ellipsis: true,
           customRender: ({ text }) => this.formatDate(text)
         }
@@ -467,22 +467,26 @@ export default {
   &__table {
     height: 100%;
 
-    .ant-table { font-size: 12px; }
+    // .ant-table-small sets its own 14px font and 8px cell padding, so match its specificity
+    .ant-table.ant-table-small { font-size: 12px; }
 
-    .ant-table-thead > tr > th,
-    .ant-table-tbody > tr > td {
+    .ant-table.ant-table-small .ant-table-thead > tr > th,
+    .ant-table.ant-table-small .ant-table-tbody > tr > td {
       height: 30px;
       padding: 4px 10px;
       white-space: nowrap;
     }
 
-    .ant-table-thead > tr > th {
+    .ant-table.ant-table-small .ant-table-thead > tr > th {
       position: sticky;
       top: 0;
       z-index: 1;
       font-size: 12px;
       font-weight: 600;
     }
+
+    // antd only caps the body with max-height, which leaves the horizontal scrollbar right under a few rows
+    .ant-table-body { height: var(--activity-table-body-height); }
 
     .ant-table-body,
     .ant-table-content {
