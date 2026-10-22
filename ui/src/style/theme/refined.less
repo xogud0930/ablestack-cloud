@@ -445,7 +445,8 @@ html.theme-refined body {
     box-shadow: none;
   }
 
-  .ant-card .ant-table-footer {
+  // the (usually empty) footer strip under every table was painted #fafafa / slate
+  .ant-table-footer {
     background: transparent;
   }
 
@@ -700,6 +701,22 @@ html.theme-refined body {
   // the knob stays white in both modes (dark-mode.less leaves it dark)
   .ant-switch-handle::before {
     background-color: #fff !important;
+  }
+
+  // one track size (24px) with the 18px knob inset 3px on every side; antd's 22px track left it 2px off-center
+  .ant-switch:not(.ant-switch-small) {
+    height: 24px;
+    min-width: 44px;
+    line-height: 24px;
+
+    .ant-switch-handle {
+      top: 3px;
+      left: 3px;
+    }
+
+    &.ant-switch-checked .ant-switch-handle {
+      left: calc(100% - 21px);
+    }
   }
 
   .ant-tag {
@@ -976,6 +993,63 @@ html.theme-refined body {
   .ant-tooltip-inner {
     border-radius: 8px;
   }
+
+  // bottom activity panel (recent events / alerts): one surface tone, pill tabs like the side tabs
+  .bottom-activity-panel {
+    border-top: 0;
+    box-shadow: 0 -1px 0 var(--ui-border), 0 -8px 24px rgba(0, 0, 0, 0.06);
+
+    &__header {
+      align-items: center;
+      padding: 4px 8px;
+      background: transparent;
+      border-bottom-color: var(--ui-border);
+    }
+
+    &__tab {
+      height: 28px;
+      border-bottom: 0;
+      border-radius: 7px;
+      font-weight: 500;
+      transition: background 0.2s;
+
+      &:hover {
+        background: var(--ui-bg-hover);
+      }
+
+      &.is-active {
+        color: var(--ui-text-primary);
+        background: var(--ui-bg-selected);
+        font-weight: 600;
+      }
+    }
+
+    // dark-mode.less borders every non-primary button at higher specificity
+    &__header-actions .ant-btn {
+      width: 28px;
+      height: 28px;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 7px;
+      box-shadow: none;
+
+      &:hover,
+      &:focus-visible {
+        background: var(--ui-bg-hover) !important;
+      }
+    }
+
+    // antd paints the scrollbar gutter cell with its own fill and a 1px shadow
+    .ant-table-cell-scrollbar {
+      background: var(--ui-bg-surface);
+      box-shadow: none;
+    }
+
+    &__footer {
+      background: transparent;
+      border-top-color: var(--ui-border);
+    }
+  }
 }
 
 // scroll edge: the lowest bar gets a hairline only once content scrolls under it (GlobalLayout sets html.content-scrolled)
@@ -992,6 +1066,10 @@ html.theme-refined.content-scrolled body {
 
 // dark: shadows read as smudges, so surfaces separate by tone only
 html.theme-refined.dark-mode body {
+  .bottom-activity-panel {
+    box-shadow: 0 -1px 0 var(--ui-border);
+  }
+
   .ant-card-bordered,
   .capacity-dashboard .dashboard-card,
   .capacity-dashboard .dashboard-storage,
