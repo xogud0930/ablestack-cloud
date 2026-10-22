@@ -3319,15 +3319,14 @@ export default {
 /* keep the page controls in view; ListView lifts its sticky horizontal scrollbar above this bar */
 .list-pagination {
   position: sticky;
-  bottom: 0;
+  /* sit on the scroll area's bottom edge instead of above its 16px bottom padding */
+  bottom: -16px;
   z-index: 3;
-  /* -10px cancels the wrapper's bottom margin, so the bar's resting place at the end of the list
-     matches where it sticks and it does not shift 10px as the scroll reaches the end */
-  margin: 0 -24px -10px;
-  padding: 10px 24px;
+  /* -26px cancels the wrapper's 10px margin and that 16px padding, so the bar rests at the end
+     of the list exactly where it sticks and does not shift as the scroll reaches the end */
+  margin: 0 0 -26px;
+  padding: 6px 0;
   background: var(--ui-bg-page);
-  /* also covers the scroll area's 16px bottom padding, where rows would otherwise show below the bar */
-  box-shadow: 0 16px 0 var(--ui-bg-page);
 }
 
 .ant-breadcrumb {
