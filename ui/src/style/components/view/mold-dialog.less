@@ -26,7 +26,8 @@
     overflow: hidden;
   }
   .ant-modal-header, .ant-modal-footer { flex: 0 0 auto; }
-  .ant-modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  // position: relative keeps popups opened inside the body moving with its scroll
+  .ant-modal-body { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .ant-descriptions-item-label { min-width: 120px; }
   .ant-descriptions-item-content { overflow-wrap: anywhere; }
 }

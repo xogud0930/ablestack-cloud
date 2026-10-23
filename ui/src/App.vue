@@ -16,7 +16,7 @@
 // under the License.
 
 <template>
-  <a-config-provider :locale="locale">
+  <a-config-provider :locale="locale" :getPopupContainer="getPopupContainer">
     <div id="app">
       <router-view/>
     </div>
@@ -54,6 +54,14 @@ export default {
   created () {
     window.less.modifyVars(this.$config.theme)
     console.log('config and theme applied')
+  },
+  methods: {
+    // a select inside a modal opens in the modal body so it scrolls with the field;
+    // attached to <body> it stayed put while the dialog content scrolled away
+    getPopupContainer (trigger) {
+      const field = trigger?.closest?.('.ant-select, .ant-picker, .ant-cascader')
+      return field?.closest('.ant-modal-body') || document.body
+    }
   }
 }
 </script>
