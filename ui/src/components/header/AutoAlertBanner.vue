@@ -66,7 +66,7 @@
                       {{ tr('message.alerting.title') }}
                     </span>
                     <span class="summary-modern-count">
-                      ({{ alertingCount }}{{ trCountUnit() }})
+                      {{ alertingCount }}{{ trCountUnit() }}
                     </span>
                   </div>
 
@@ -4076,5 +4076,174 @@ body.dark-mode .wall-alert-drawer .drawer-toolbar .ant-btn-link,
 body.dark-mode .wall-alert-drawer .drawer-toolbar .ant-btn-link > span,
 body.dark-mode .wall-alert-drawer .drawer-toolbar .ant-btn-link .anticon {
   color: rgba(255, 255, 255, 0.88) !important;
+}
+/* ===== Theme tokens: one quiet strip and neutral cards in both light and dark =====
+   doubled classes outrank the dark-mode and theme alert rules above */
+html body .auto-alert-banner-container.auto-alert-banner-container .ant-alert.alert-summary {
+  padding: 8px 10px 8px 14px;
+  color: var(--ui-error-text) !important;
+  background: var(--ui-error-bg) !important;
+  border: 1px solid var(--ui-error-border) !important;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-left {
+  gap: 10px;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-icon {
+  width: auto;
+  height: auto;
+  color: var(--ui-error-icon);
+  font-size: 16px;
+  background: transparent;
+}
+
+/* title and description share one line */
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-text {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-title {
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-title-text {
+  color: var(--ui-error-text) !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-count {
+  padding: 0 7px;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  background: var(--ui-error-icon);
+  border-radius: 9px;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-desc {
+  flex: 1 1 auto;
+  margin-top: 0;
+  color: var(--ui-text-secondary) !important;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-bullet {
+  display: none;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-actions.summary-modern-actions .ant-btn:not(.ant-btn-dangerous):not(.ant-btn-text) {
+  color: var(--ui-text-primary) !important;
+  background: var(--ui-bg-surface) !important;
+  border-color: var(--ui-border) !important;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-actions.summary-modern-actions .ant-btn.ant-btn-text {
+  color: var(--ui-text-secondary) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-actions .ant-btn-dangerous,
+html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-actions .ant-btn-dangerous > span {
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  html body .auto-alert-banner-container.auto-alert-banner-container .summary-modern-text {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-title-main,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-title-main * {
+  color: var(--ui-text-primary) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-title-main .drawer-title-count {
+  color: var(--ui-error-icon) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-title-sub,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-title-sub * {
+  color: var(--ui-text-secondary) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .ant-drawer-body,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-alert-viewport {
+  background: var(--ui-bg-page) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-toolbar {
+  background: var(--ui-bg-surface) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-toolbar .ant-btn-link,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-toolbar .ant-btn-link > span {
+  color: var(--ui-text-secondary) !important;
+}
+
+/* a neutral card with a red edge; the whole-card red tint made three alerts read as one wall of red */
+html body .wall-alert-drawer.wall-alert-drawer .ant-alert.drawer-item-alert {
+  margin-bottom: 8px !important;
+  color: var(--ui-text-primary) !important;
+  background: var(--ui-bg-surface) !important;
+  border: 1px solid var(--ui-border) !important;
+  border-left: 3px solid var(--ui-error-icon) !important;
+  border-radius: 10px !important;
+  box-shadow: none;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-icon-circle {
+  width: 24px;
+  height: 24px;
+  color: var(--ui-error-icon);
+  background: var(--ui-error-bg);
+  border: 0;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-title,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-title * {
+  color: var(--ui-text-primary) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-meta-row,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-meta-row * {
+  color: var(--ui-text-secondary) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-divider {
+  background: var(--ui-border) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-target-line,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-target-line * {
+  color: var(--ui-text-primary) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-actions .ant-btn {
+  color: var(--ui-text-primary) !important;
+  background: var(--ui-bg-surface) !important;
+  border-color: var(--ui-border) !important;
+}
+
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-actions .ant-btn > span,
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-actions .ant-btn .anticon {
+  color: inherit !important;
+}
+
+/* pausing a rule is the one action that stops alerting, so it keeps the error color */
+html body .wall-alert-drawer.wall-alert-drawer .drawer-item-actions.drawer-item-actions .ant-btn.ant-btn-dangerous.pause-btn {
+  color: var(--ui-error-icon) !important;
+  /* --ui-error-border is transparent in the refined theme */
+  border: 1px solid color-mix(in srgb, var(--ui-error-icon) 45%, transparent) !important;
 }
 </style>
