@@ -924,10 +924,9 @@
                         </a-button>
                       </div>
                     </div>
-                    <a-empty
-                      v-else-if="!isHostLinked(sidePanelDevice)"
-                      :description="t('rackDiagram.noQuickLinks')"
-                    />
+                    <div v-else-if="!isHostLinked(sidePanelDevice)" class="device-link-empty">
+                      {{ t('rackDiagram.noQuickLinks') }}
+                    </div>
                   </div>
                 </div>
               </a-tab-pane>
@@ -2973,6 +2972,8 @@ watch(() => deviceForm.height, () => {
 const inventoryLoading = ref(false)
 const inventoryOptions = ref([])
 const hostCache = ref({})
+// host ids the API reported as gone; their host links have nothing to open
+const missingHostIds = ref({})
 const hostVmModalVisible = ref(false)
 const hostVmModalTitle = ref(t('rackDiagram.hostVmList'))
 const hostVmLoading = ref(false)
@@ -3114,7 +3115,8 @@ const getLinkedHostId = (item) => {
 }
 
 const isHostLinked = (item) => {
-  return !!getLinkedHostId(item)
+  const hostId = getLinkedHostId(item)
+  return !!hostId && !missingHostIds.value[hostId]
 }
 
 const parseQuickLinksRowsWithValidation = (rows) => {
@@ -3353,9 +3355,17 @@ const onDropRackFrame = (targetRIndex, event) => {
 const fetchHostById = async (hostId) => {
   if (!hostId) return null
   if (hostCache.value[hostId]) return hostCache.value[hostId]
-  const json = await getAPI('listHosts', { id: hostId })
+  let json
+  try {
+    json = await getAPI('listHosts', { id: hostId })
+  } catch (e) {
+    // 431: the id is not a host anymore
+    if (e?.response?.status === 431) missingHostIds.value[hostId] = true
+    throw e
+  }
   const host = json?.listhostsresponse?.host?.[0] || null
   if (host) hostCache.value[hostId] = host
+  else missingHostIds.value[hostId] = true
   return host
 }
 
@@ -5894,6 +5904,11 @@ onBeforeUnmount(() => {
   color: var(--ui-text-muted);
   white-space: normal;
   word-break: keep-all;
+}
+
+.device-link-empty {
+  color: var(--ui-text-muted);
+  font-size: 13px;
 }
 
 .device-memo-add-btn {
