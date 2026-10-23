@@ -405,7 +405,7 @@
           <div class="rack-container" v-else>
             <div class="rack-wrapper" v-for="{ rack, index: rIndex } in visibleRackEntries" :key="`rack-${rIndex}`">
 
-              <div class="rack-header">
+              <div class="rack-header" :style="rackHeaderStyle">
                 <div class="rack-header-top">
                   <div class="rack-header-title-group">
                     <a-tooltip
@@ -1574,7 +1574,18 @@ const commitZoomUi = () => {
 const zoomWrapperStyle = computed(() => {
   const z = Number(zoomLevel.value || 1)
   return {
-    zoom: z
+    zoom: z,
+    // enlarge rack text as the rack shrinks so labels stay readable
+    '--rack-text-scale': Math.min(1.45, Math.max(1, 0.8 / z)).toFixed(3)
+  }
+})
+
+// the header keeps its real size while the rack below it zooms, at the rack's on-screen width
+const rackHeaderStyle = computed(() => {
+  const z = Number(zoomLevel.value || 1)
+  return {
+    zoom: 1 / z,
+    width: `${Math.round(604 * z)}px`
   }
 })
 
@@ -2190,10 +2201,12 @@ const updateSidePaneAvailableHeight = () => {
     rackScrollContainer = rackDiagramRootRef.value?.closest('.layout-content') || null
   }
 
-  const slotRect = slot.getBoundingClientRect()
   const scrollRect = rackScrollContainer?.getBoundingClientRect()
   const viewportBottom = Math.min(window.innerHeight, scrollRect?.bottom || window.innerHeight)
-  const availableHeight = Math.floor(viewportBottom - slotRect.top - 16)
+  // size from the sticky line, not the current position: a height that follows scrolling
+  // changes the page length and makes the pane jump near the bottom
+  const stickyTop = (scrollRect?.top || 0) + (Number.parseFloat(window.getComputedStyle(slot).top) || 0)
+  const availableHeight = Math.floor(viewportBottom - stickyTop - 16)
   const nextHeight = Math.max(240, availableHeight)
 
   if (Math.abs(nextHeight - sidePaneAvailableHeight.value) > 1) {
@@ -5360,8 +5373,9 @@ onBeforeUnmount(() => {
 
 .rack-side-pane-card {
   border-radius: 8px;
-  border-color: rgba(0,0,0,0.06);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-bg-surface);
+  box-shadow: none;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -5371,12 +5385,17 @@ onBeforeUnmount(() => {
   min-height: 0;
 }
 
+/* the pane sits inside the rack card, where themes make nested cards transparent */
+.rack-diagram-root .rack-side-pane .rack-side-pane-card.ant-card {
+  background: var(--ui-bg-surface);
+}
+
 .rack-side-pane-card :deep(.ant-card-head) {
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
-  background: #fff;
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  background: var(--ui-bg-surface);
+  border-bottom-color: var(--ui-border);
 }
 
 .rack-side-pane-card :deep(.ant-tabs-content-holder),
@@ -5395,6 +5414,7 @@ onBeforeUnmount(() => {
   min-height: 0;
   padding-bottom: 64px !important;
   overflow: hidden;
+  background: var(--ui-bg-surface);
 }
 
 .device-summary-header {
@@ -5482,18 +5502,22 @@ onBeforeUnmount(() => {
 }
 
 .device-info-section {
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--ui-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--ui-bg-surface);
   padding: 10px 12px;
   margin-bottom: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  box-shadow: none;
 }
 
 .device-info-tabs :deep(.ant-tabs-nav) {
   flex: 0 0 auto;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 14px;
+  border-bottom: 0;
+}
+
+.device-info-tabs :deep(.ant-tabs-nav::before) {
+  display: none;
 }
 
 .device-info-tabs {
@@ -6145,8 +6169,8 @@ onBeforeUnmount(() => {
 /* same width as .rack-body so the card and the rack line up */
 .rack-header {
   width: 604px;
-  margin: 0 auto 16px;
-  padding: 14px 16px 12px;
+  margin: 0 auto 12px;
+  padding: 10px 12px;
   color: var(--ui-text-primary);
   background: var(--ui-bg-surface);
   border: 1px solid var(--ui-border);
@@ -6159,7 +6183,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  min-height: 42px;
+  min-height: 32px;
 }
 
 .rack-header-title-group {
@@ -6173,7 +6197,7 @@ onBeforeUnmount(() => {
 
 .rack-header-title {
   color: #111827;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.2;
   min-width: 0;
@@ -6199,13 +6223,13 @@ onBeforeUnmount(() => {
 
 .rack-header-action-separator {
   width: 1px;
-  height: 26px;
+  height: 20px;
   background: #e5e7eb;
 }
 
 .rack-header-action-btn {
-  width: 48px !important;
-  height: 42px !important;
+  width: 32px !important;
+  height: 32px !important;
   padding: 0 !important;
   border-radius: 6px !important;
   display: inline-flex !important;
@@ -6214,7 +6238,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-header-action-btn :deep(.anticon) {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .rack-header-action-btn:hover {
@@ -6225,11 +6249,11 @@ onBeforeUnmount(() => {
 .rack-header-meta-row {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  gap: 6px;
-  margin-top: 25px;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin-top: 6px;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   min-width: 0;
   overflow: hidden;
@@ -6309,7 +6333,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   color: #6b7280;
-  font-size: 14px;
+  font-size: calc(14px * var(--rack-text-scale, 1));
   font-family: 'Courier New', monospace;
   font-weight: bold;
   box-sizing: border-box;
@@ -6344,7 +6368,6 @@ onBeforeUnmount(() => {
   width: 100%;
   position: relative;
   box-sizing: border-box;
-  border-bottom: 1px solid #c4cfdd;
   border-radius: 0;
   overflow: hidden; /* 자식 요소의 각진 부분 잘라내기 */
   margin-bottom: 0;
@@ -6356,9 +6379,18 @@ onBeforeUnmount(() => {
 
 .rack-item-selected,
 .rack-item-selected:hover {
-  border: 1px solid var(--rack-brand-primary);
   background: var(--rack-brand-primary-bg);
   z-index: 3;
+}
+
+/* drawn over the device so selecting it does not shrink the device art */
+.rack-item-selected::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--rack-brand-primary);
+  pointer-events: none;
+  z-index: 6;
 }
 
 .rack-item-selected::after {
@@ -6400,7 +6432,7 @@ onBeforeUnmount(() => {
     #e2e8f0 20px
   );
   color: #475569;
-  font-size: 14px;
+  font-size: calc(14px * var(--rack-text-scale, 1));
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -6438,13 +6470,13 @@ onBeforeUnmount(() => {
   content: none;
 }
 
-/* 1. 상단 컬러 라인 (기존 SVG 상단 라인 대체) */
+/* 1. 좌측 컬러 라인: 장비 경계선과 겹치지 않도록 세로로 둔다 */
 .device-top-line {
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
-  right: 0;
-  height: 2px;
+  width: 3px;
   opacity: 0.92;
   z-index: 2;
 }
@@ -6604,7 +6636,7 @@ onBeforeUnmount(() => {
   right: 160px;
   transform: translateY(-50%);
   color: #1f2937;
-  font-size: 15px;
+  font-size: calc(15px * var(--rack-text-scale, 1));
   font-weight: bold;
   text-shadow: none;
   pointer-events: none;
@@ -6646,7 +6678,7 @@ onBeforeUnmount(() => {
   padding: 1px 5px;
   border-radius: 10px;
   flex: 0 0 auto;
-  font-size: 10px;
+  font-size: calc(10px * var(--rack-text-scale, 1));
   font-weight: 700;
   border: 1px solid #d9d9d9;
 }
@@ -6663,8 +6695,8 @@ onBeforeUnmount(() => {
 }
 
 .device-content-compact .device-name-tag {
-  font-size: 14px;
-  line-height: 18px;
+  font-size: calc(14px * var(--rack-text-scale, 1));
+  line-height: 1.3;
 }
 
 .device-content-compact .tag-content {
@@ -6675,8 +6707,8 @@ onBeforeUnmount(() => {
 
 .device-content-compact .tag-badge {
   padding: 0 5px;
-  font-size: 9px;
-  line-height: 14px;
+  font-size: calc(9px * var(--rack-text-scale, 1));
+  line-height: 1.5;
 }
 
 /* 액션 버튼 (호버 시에만 표시) */
@@ -6955,7 +6987,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-side-pane-card :deep(.ant-card-body) {
-  background: var(--ui-bg-page);
+  background: var(--ui-bg-surface);
 }
 
 .rack-diagram-root.is-dark .rack-side-pane {
@@ -7009,7 +7041,7 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-content-holder),
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-content),
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-tabpane) {
-  background: var(--ui-bg-page);
+  background: transparent;
 }
 
 .rack-diagram-root.is-dark .rack-side-pane :deep(.ant-input),
