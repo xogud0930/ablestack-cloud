@@ -5379,6 +5379,11 @@ onBeforeUnmount(() => {
   border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 
+.rack-side-pane-card :deep(.ant-tabs-content-holder),
+.rack-side-pane-card :deep(.ant-tabs-tabpane) {
+  background: transparent;
+}
+
 .rack-side-pane-card :deep(.ant-card-body) {
   position: relative;
   display: flex;
@@ -6137,15 +6142,16 @@ onBeforeUnmount(() => {
 }
 
 /* 랙 헤더 */
+/* same width as .rack-body so the card and the rack line up */
 .rack-header {
-  color: #111827;
-  margin-bottom: 24px;
-  padding: 16px 16px 14px;
+  width: 604px;
+  margin: 0 auto 16px;
+  padding: 14px 16px 12px;
+  color: var(--ui-text-primary);
+  background: var(--ui-bg-surface);
+  border: 1px solid var(--ui-border);
   border-radius: 12px;
-  background: #fff;
-  border: 1px solid #eef2f7;
-  border-bottom: 1px solid #1677ff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  box-shadow: none;
 }
 
 .rack-header-top {
@@ -6311,17 +6317,11 @@ onBeforeUnmount(() => {
   border-bottom: 1px dotted rgba(15, 23, 42, 0.12);
 }
 
-/* 맨 위 눈금 상단 선 보정 */
-.ruler-number:first-child {
-  border-top: 1px dotted rgba(15, 23, 42, 0.12);
-}
-
 .ruler-number-selected {
   color: var(--rack-brand-primary);
   background: var(--rack-brand-primary-bg);
-  border-left: 1px solid var(--rack-brand-primary);
-  border-top: 1px solid var(--rack-brand-primary);
-  border-bottom: 1px solid var(--rack-brand-primary);
+  border-bottom-color: transparent;
+  box-shadow: inset 2px 0 0 var(--rack-brand-primary);
 }
 
 /* 랙 내부 프레임 */
@@ -6336,7 +6336,7 @@ onBeforeUnmount(() => {
   margin: 0 auto;
   /* 내부 장비들이 둥근 모서리를 벗어나지 않도록 잘라냄 */
   overflow: hidden;
-  padding: 2px 0;
+  padding: 0;
 }
 
 /* 개별 아이템 (장비 또는 여백) */
@@ -7128,8 +7128,6 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .rack-header {
   background: var(--ui-bg-surface);
   border-color: var(--ui-border);
-  border-bottom-color: #4c93ff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
 .rack-diagram-root.is-dark .rack-header-title {
@@ -7175,14 +7173,10 @@ onBeforeUnmount(() => {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-.rack-diagram-root.is-dark .ruler-number:first-child {
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
 .rack-diagram-root.is-dark .ruler-number-selected {
   color: var(--rack-brand-primary);
   background: var(--rack-brand-primary-bg-strong);
-  border-color: var(--rack-brand-primary);
+  border-bottom-color: transparent;
 }
 
 .rack-diagram-root.is-dark .rack-frame {
