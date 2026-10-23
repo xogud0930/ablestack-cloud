@@ -15,5 +15,31 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-
-INSERT INTO `cloud`.`hypervisor_capabilities` (uuid, hypervisor_type, hypervisor_version, max_guests_limit, security_group_enabled, max_data_volumes_limit, max_hosts_per_cluster, storage_motion_supported, vm_snapshot_enabled) values (UUID(), 'Simulator', 'default', 50, 1, 6, NULL, 1, 1);
+INSERT INTO `cloud`.`hypervisor_capabilities`
+(
+    uuid,
+    hypervisor_type,
+    hypervisor_version,
+    max_guests_limit,
+    security_group_enabled,
+    max_data_volumes_limit,
+    max_hosts_per_cluster,
+    storage_motion_supported,
+    vm_snapshot_enabled
+)
+SELECT
+    UUID(),
+    'Simulator',
+    'default',
+    50,
+    1,
+    6,
+    NULL,
+    1,
+    1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM `cloud`.`hypervisor_capabilities`
+    WHERE hypervisor_type = 'Simulator'
+      AND hypervisor_version = 'default'
+);

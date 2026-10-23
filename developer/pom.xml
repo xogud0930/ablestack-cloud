@@ -267,10 +267,10 @@
                                 <argument>${basedir}/target/db/create-schema-simulator.sql</argument>
                                 <argument>${basedir}/target/db/templates.simulator.sql</argument>
                                 <argument>${basedir}/target/db/hypervisor_capabilities.simulator.sql</argument>
-                                <!-- upgrade -->
-                                <argument>com.cloud.upgrade.DatabaseUpgradeChecker</argument>
-                                <argument>--database=simulator</argument>
-                                <argument>--rootpassword=${db.root.password}</argument>
+				<!-- Simulator schema initialization without upgrade checker -->
+				<!-- <argument>com.cloud.upgrade.DatabaseUpgradeChecker</argument> -->
+				<argument>--database=simulator</argument>
+				<argument>--rootpassword=${db.root.password}</argument>
                             </arguments>
                             <systemProperties>
                                 <systemProperty>
