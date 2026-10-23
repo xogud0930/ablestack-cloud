@@ -954,6 +954,8 @@
 
     <a-modal
       v-model:visible="rackModalVisible"
+      class="mold-dialog"
+      centered
       :title="rackModalMode === 'add' ? t('rackDiagram.addRack') : t('label.edit')"
       :ok-text="t('label.ok')"
       :cancel-text="t('label.cancel')"
@@ -961,12 +963,12 @@
       @cancel="closeRackModal"
       destroyOnClose
     >
-      <a-form layout="vertical">
+      <a-form layout="vertical" class="rack-config-form">
         <a-form-item
           :label="t('rackDiagram.rackName')"
           :required="true"
           :validateStatus="rackFormErrors.name ? 'error' : ''"
-          :help="rackFormErrors.name"
+          :help="rackFormErrors.name || undefined"
         >
           <a-input v-model:value="rackForm.name" :placeholder="t('rackDiagram.rackNamePlaceholder')" />
         </a-form-item>
@@ -980,7 +982,7 @@
           :label="t('rackDiagram.totalHeight')"
           :required="true"
           :validateStatus="rackFormErrors.totalHeight ? 'error' : ''"
-          :help="rackFormErrors.totalHeight"
+          :help="rackFormErrors.totalHeight || undefined"
         >
           <a-input-number
             v-model:value="rackForm.totalHeight"
@@ -995,6 +997,8 @@
     </a-modal>
     <a-modal
       v-model:visible="moveModalVisible"
+      class="mold-dialog"
+      centered
       :title="t('rackDiagram.moveDeviceTitle')"
       :ok-text="t('label.ok')"
       :cancel-text="t('label.cancel')"
@@ -1023,6 +1027,8 @@
     </a-modal>
     <a-modal
       v-model:visible="deviceModalVisible"
+      class="mold-dialog"
+      centered
       :title="t('rackDiagram.deviceConfig')"
       :ok-text="t('label.ok')"
       :cancel-text="t('label.cancel')"
@@ -1037,7 +1043,7 @@
           :label="t('rackDiagram.deviceType')"
           :required="true"
           :validateStatus="deviceFormErrors.type ? 'error' : ''"
-          :help="deviceFormErrors.type"
+          :help="deviceFormErrors.type || undefined"
         >
           <a-select v-model:value="deviceForm.type" style="width: 100%" @change="handleTypeChange">
             <a-select-option value="server">{{ t('rackDiagram.deviceTypeServer') }}</a-select-option>
@@ -1064,7 +1070,7 @@
           v-if="deviceForm.type !== 'blank'"
           :required="true"
           :validateStatus="deviceFormErrors.label ? 'error' : ''"
-          :help="deviceFormErrors.label"
+          :help="deviceFormErrors.label || undefined"
         >
           <a-input
             v-model:value="deviceForm.label"
@@ -1092,7 +1098,7 @@
           v-if="deviceForm.type === 'custom'"
           :required="true"
           :validateStatus="deviceFormErrors.customType ? 'error' : ''"
-          :help="deviceFormErrors.customType"
+          :help="deviceFormErrors.customType || undefined"
         >
           <a-input v-model:value="deviceForm.customType" :placeholder="t('rackDiagram.customTypePlaceholder')" />
         </a-form-item>
@@ -1101,7 +1107,7 @@
           :label="t('rackDiagram.height')"
           :required="true"
           :validateStatus="deviceFormErrors.height ? 'error' : ''"
-          :help="deviceFormErrors.height"
+          :help="deviceFormErrors.height || undefined"
         >
         <a-input-number
           v-model:value="deviceForm.height"
@@ -1110,7 +1116,7 @@
           :precision="0"
           style="width: 100%"
         />
-        <div style="font-size: 12px; color: #888; margin-top: 4px;">
+        <div class="device-height-hint">
           <InfoCircleOutlined style="margin-right: 4px;" />
           {{ t('rackDiagram.maxAllowedHeightPrefix') }} <strong>{{ maxAllowedHeight }}U</strong> {{ t('rackDiagram.maxAllowedHeightSuffix') }}
         </div>
@@ -1299,6 +1305,8 @@
     </a-modal>
     <a-modal
       v-model:visible="assetLinkModalVisible"
+      class="mold-dialog"
+      centered
       :title="t('rackDiagram.changeInfraAsset')"
       :ok-text="t('label.ok')"
       :cancel-text="t('label.cancel')"
@@ -1326,6 +1334,8 @@
     </a-modal>
     <a-modal
       v-model:visible="hostVmModalVisible"
+      class="mold-dialog"
+      centered
       :title="hostVmModalTitle"
       :footer="null"
       width="760px"
@@ -6026,30 +6036,45 @@ onBeforeUnmount(() => {
 }
 
 .device-config-section {
-  border-radius: 8px;
-  border-color: rgba(0,0,0,0.06);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  background: transparent;
+  border-color: var(--ui-border);
+  border-radius: 12px;
+  box-shadow: none;
 }
 
 .device-config-section :deep(.ant-card-head) {
   min-height: 38px;
   padding: 0 14px;
-  border-bottom-color: rgba(0,0,0,0.06);
+  background: transparent;
+  border-bottom-color: var(--ui-border);
 }
 
 .device-config-section :deep(.ant-card-head-title) {
   padding: 9px 0;
-  color: #111827;
+  color: var(--ui-text-primary);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .device-config-section :deep(.ant-card-body) {
   padding: 14px;
+  background: transparent;
 }
 
-.device-config-section :deep(.ant-form-item:last-child) {
+.device-config-section :deep(.ant-form-item),
+.rack-config-form :deep(.ant-form-item) {
+  margin-bottom: 16px;
+}
+
+.device-config-section :deep(.ant-form-item:last-child),
+.rack-config-form :deep(.ant-form-item:last-child) {
   margin-bottom: 0;
+}
+
+.device-height-hint {
+  margin-top: 4px;
+  color: var(--ui-text-muted);
+  font-size: 12px;
 }
 
 .device-config-section-form-item :deep(.ant-form-item-label) {
@@ -6080,7 +6105,7 @@ onBeforeUnmount(() => {
 }
 
 .device-hardware-form-row > label {
-  color: #475569;
+  color: var(--ui-text-secondary);
   font-size: 13px;
   font-weight: 600;
 }
@@ -6655,12 +6680,14 @@ onBeforeUnmount(() => {
 }
 
 /* 액션 버튼 (호버 시에만 표시) */
+/* right edge, so the hover toolbar never covers the device name in the middle */
 .device-actions {
   position: absolute !important;
   top: 50%;
+  right: 8px;
   bottom: auto;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: auto;
+  transform: translateY(-50%);
   z-index: 5;
 
   display: flex !important;
