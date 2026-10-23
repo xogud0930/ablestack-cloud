@@ -2215,8 +2215,18 @@ const updateSidePaneAvailableHeight = () => {
   const viewportBottom = Math.min(window.innerHeight, scrollRect?.bottom || window.innerHeight)
   // size from the sticky line, not the current position: a height that follows scrolling
   // changes the page length and makes the pane jump near the bottom
-  const stickyTop = (scrollRect?.top || 0) + (Number.parseFloat(window.getComputedStyle(slot).top) || 0)
-  const availableHeight = Math.floor(viewportBottom - stickyTop - 16)
+  // sticky offsets start inside the scroller's top padding
+  const scrollPaddingTop = rackScrollContainer ? Number.parseFloat(window.getComputedStyle(rackScrollContainer).paddingTop) || 0 : 0
+  const stickyTop = (scrollRect?.top || 0) + scrollPaddingTop + (Number.parseFloat(window.getComputedStyle(slot).top) || 0)
+  // keep the pane clear of what sits below the rack layout, or the layout end pushes it under the header
+  const layoutRect = rackDetailLayoutRef.value?.getBoundingClientRect()
+  const belowLayout = rackScrollContainer && scrollRect && layoutRect
+    ? rackScrollContainer.scrollHeight - (layoutRect.bottom - scrollRect.top + rackScrollContainer.scrollTop)
+    : 0
+  const viewportHeight = viewportBottom - stickyTop - Math.max(16, belowLayout)
+  // no taller than the rack itself, so the pane never lengthens the page
+  const rackHeight = rackMainPaneRef.value?.offsetHeight || viewportHeight
+  const availableHeight = Math.floor(Math.min(viewportHeight, rackHeight))
   const nextHeight = Math.max(240, availableHeight)
 
   if (Math.abs(nextHeight - sidePaneAvailableHeight.value) > 1) {
@@ -5333,8 +5343,9 @@ onBeforeUnmount(() => {
   width: clamp(320px, 42%, 460px);
   flex: 0 0 clamp(320px, 42%, 460px);
   margin-left: 12px;
+  /* the fixed header is outside the scroller; sticking lower left a gap above the pane */
   position: sticky;
-  top: 64px;
+  top: 0;
   align-self: flex-start;
   height: calc(100vh - 80px);
   max-height: calc(100vh - 80px);
