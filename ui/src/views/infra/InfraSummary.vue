@@ -391,9 +391,10 @@ export default {
 
 <style lang="scss" scoped>
 
+  // match the 12px content padding; -24px ran 12px past the page and added a horizontal scrollbar
   .breadcrumb-card {
-    margin-left: -24px;
-    margin-right: -24px;
+    margin-left: -12px;
+    margin-right: -12px;
     margin-top: -16px;
     margin-bottom: 12px;
   }
