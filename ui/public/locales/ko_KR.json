@@ -5478,6 +5478,7 @@
   "rackDiagram.changeInfraAsset": "자산 연결 변경",
   "rackDiagram.changeInfraAssetHelp": "연결된 인프라 자산만 변경합니다. 변경사항을 적용하려면 우측 패널에서 저장하세요.",
   "rackDiagram.changeInfraAssetInlineHelp": "이 장비가 연결된 인프라 자산을 변경합니다.",
+  "rackDiagram.assetNotFound": "찾을 수 없는 호스트",
   "rackDiagram.deviceDelete": "장비 삭제",
   "rackDiagram.noQuickLinks": "등록된 바로가기 링크가 없습니다.",
   "rackDiagram.links": "링크",

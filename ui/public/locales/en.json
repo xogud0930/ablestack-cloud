@@ -5510,6 +5510,7 @@
   "rackDiagram.changeInfraAsset": "Change infra asset",
   "rackDiagram.changeInfraAssetHelp": "Changing the linked infra asset only updates the rack device mapping. Save the device panel to apply the change.",
   "rackDiagram.changeInfraAssetInlineHelp": "Changes the infra asset linked to this device.",
+  "rackDiagram.assetNotFound": "Host not found",
   "rackDiagram.deviceDelete": "Delete device",
   "rackDiagram.noQuickLinks": "No shortcut links registered.",
   "rackDiagram.links": "Links",

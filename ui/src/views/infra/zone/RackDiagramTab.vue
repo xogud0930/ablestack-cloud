@@ -853,7 +853,7 @@
                       <div>{{ t('rackDiagram.hostLabel') }}</div>
                       <div class="device-info-copy-value">
                         <a-tooltip :title="selectedDeviceLinkedAssetName">
-                          <span>{{ selectedDeviceLinkedAssetName || '-' }}</span>
+                          <span :class="{ 'device-asset-missing': selectedDeviceLinkedAsset.missing }">{{ selectedDeviceLinkedAssetName || '-' }}</span>
                         </a-tooltip>
                         <a-tooltip :title="t('label.copy.clipboard')">
                           <a-button size="small" type="text" class="device-linked-asset-copy" @click="copyTextToClipboard(selectedDeviceLinkedAssetName)">
@@ -1083,7 +1083,7 @@
           <a-select
             v-model:value="deviceForm.sourceRef"
             :loading="inventoryLoading"
-            :options="inventoryOptions"
+            :options="withMissingAssetOption(deviceForm.sourceRef)"
             :show-search="true"
             option-filter-prop="label"
             :placeholder="t('rackDiagram.selectHost')"
@@ -1323,7 +1323,7 @@
       <a-select
         v-model:value="assetLinkDraft"
         :loading="inventoryLoading"
-        :options="inventoryOptions"
+        :options="withMissingAssetOption(assetLinkDraft)"
         :show-search="true"
         option-filter-prop="label"
         :placeholder="t('rackDiagram.selectHost')"
@@ -2108,6 +2108,17 @@ const selectedDeviceHostInfoCompact = computed(() => {
   ])
   return selectedDeviceHostInfo.value.filter(row => !hiddenLabels.has(row.label))
 })
+// a ref whose host no longer exists (or belongs to another zone): name it instead of showing host:<uuid>
+const getMissingAssetLabel = (sourceRef) => {
+  const id = String(sourceRef || '').split(':').slice(1).join(':') || String(sourceRef || '')
+  return `${t('rackDiagram.assetNotFound')} (${id.slice(0, 8)})`
+}
+
+const withMissingAssetOption = (sourceRef) => {
+  if (!sourceRef || inventoryLoading.value || inventoryOptions.value.some(o => o.value === sourceRef)) return inventoryOptions.value
+  return [{ label: getMissingAssetLabel(sourceRef), value: sourceRef }, ...inventoryOptions.value]
+}
+
 const selectedDeviceLinkedAsset = computed(() => {
   const sourceRef = selectedDeviceDraft.sourceRef
   if (!sourceRef) return { name: '-', ip: '', copyText: '' }
@@ -2126,7 +2137,7 @@ const selectedDeviceLinkedAsset = computed(() => {
       return { name, ip, copyText: ip ? `${name} / ${ip}` : name }
     }
   }
-  return { name: sourceRef, ip: '', copyText: sourceRef }
+  return { name: getMissingAssetLabel(sourceRef), ip: '', copyText: sourceRef, missing: true }
 })
 const selectedDeviceLinkedAssetName = computed(() => selectedDeviceLinkedAsset.value.name)
 const selectedDeviceLinkedAssetIp = computed(() => selectedDeviceLinkedAsset.value.ip)
@@ -5423,10 +5434,10 @@ onBeforeUnmount(() => {
   gap: 14px;
   padding: 14px 16px;
   margin-bottom: 14px;
-  border: 1px solid rgba(22, 119, 255, 0.12);
+  border: 1px solid var(--ui-border);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(22, 119, 255, 0.08), rgba(22, 119, 255, 0.02));
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  background: var(--ui-bg-page);
+  box-shadow: none;
 }
 
 .device-summary-icon {
@@ -5877,6 +5888,12 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.device-info-copy-value > span.device-asset-missing {
+  color: var(--ui-text-muted);
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .device-memo-add-btn {
