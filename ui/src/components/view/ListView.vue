@@ -1360,6 +1360,10 @@ export default {
     }
   },
   watch: {
+    // announcement and shutdown banners change this too
+    '$store.getters.bannerHeight' () {
+      this.scheduleStickyOffsets()
+    },
     columns () {
       this.$nextTick(this.measureContentWidths)
     },
@@ -1396,11 +1400,15 @@ export default {
     this.stickyContainer = this.$refs.tableWrapper?.closest('.layout-content')
     if (this.stickyContainer) this.stickyContainer.addEventListener('scroll', this.updateStickyOffsets, { passive: true })
     window.addEventListener('resize', this.updateStickyOffsets)
+    // folding or unfolding a top banner moves the toolbar without scrolling or resizing the window
+    window.addEventListener('auto-alert-banner:height', this.scheduleStickyOffsets)
     this.$nextTick(this.updateStickyOffsets)
   },
   beforeUnmount () {
     if (this.stickyContainer) this.stickyContainer.removeEventListener('scroll', this.updateStickyOffsets)
     window.removeEventListener('resize', this.updateStickyOffsets)
+    window.removeEventListener('auto-alert-banner:height', this.scheduleStickyOffsets)
+    clearTimeout(this.stickyOffsetsTimer)
   },
   computed: {
     // the sticky header is a separate table, so body cells carry the header's one-line width as their minimum
@@ -1535,6 +1543,12 @@ export default {
       return Math.max(64, width)
     },
     // the header sticks under the pinned toolbar and the horizontal scrollbar above the pinned pagination
+    // the layout and the affixed toolbar settle over a few frames after the banner changes
+    scheduleStickyOffsets () {
+      this.$nextTick(() => requestAnimationFrame(this.updateStickyOffsets))
+      clearTimeout(this.stickyOffsetsTimer)
+      this.stickyOffsetsTimer = setTimeout(this.updateStickyOffsets, 300)
+    },
     updateStickyOffsets () {
       const container = this.stickyContainer
       if (!container) return
