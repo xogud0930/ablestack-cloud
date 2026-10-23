@@ -16,7 +16,7 @@
 // under the License.
 
 <template>
-  <a-row :gutter="12" class="infra-summary-root" :class="{ 'is-dark': isDarkMode }">
+  <a-row :gutter="12" class="infra-summary-root">
     <a-col :md="24">
       <a-card class="breadcrumb-card">
         <a-col :md="24" style="display: flex">
@@ -150,34 +150,30 @@
     <a-col :xs="24">
       <div class="infra-summary-layout" :class="{ 'is-rack-expanded': rackVisualizationExpanded }">
         <div class="summary-cards-pane" :aria-hidden="rackVisualizationExpanded">
-          <div
+          <section
             v-for="group in visibleSummaryGroups"
             :key="group.key"
             class="summary-group"
           >
-            <div class="summary-group-header">
-              <span class="summary-group-title">{{ getSummaryGroupTitle(group) }}</span>
-            </div>
-            <a-row :gutter="12">
-              <a-col
+            <div class="summary-group-title">{{ getSummaryGroupTitle(group) }}</div>
+            <div class="summary-tiles">
+              <router-link
                 v-for="section in group.items"
                 :key="section"
-                :xs="12"
-                :sm="8"
-                :md="8"
-                :style="{ marginBottom: '12px' }"
+                class="summary-tile"
+                :class="{ 'is-alert': section === 'alerts' && stats[section] > 0 }"
+                :to="{ name: section === 'backuprepositories' ? 'backuprepository' : section.substring(0, section.length - 1) }"
               >
-                <chart-card :loading="loading" class="summary-mini-card">
-                  <div class="chart-card-inner">
-                    <router-link :to="{ name: section === 'backuprepositories' ? 'backuprepository' : section.substring(0, section.length - 1) }">
-                      <h2>{{ $t(routes[section].title) }}</h2>
-                      <h2><render-icon :icon="routes[section].icon" /> {{ stats[section] }}</h2>
-                    </router-link>
-                  </div>
-                </chart-card>
-              </a-col>
-            </a-row>
-          </div>
+                <span class="summary-tile__icon"><render-icon :icon="routes[section].icon" /></span>
+                <span class="summary-tile__body">
+                  <span class="summary-tile__label" :title="$t(routes[section].title)">{{ $t(routes[section].title) }}</span>
+                  <span v-if="loading" class="summary-tile__value is-loading" />
+                  <span v-else-if="stats[section] !== undefined" class="summary-tile__value">{{ stats[section] }}</span>
+                </span>
+                <right-outlined class="summary-tile__arrow" />
+              </router-link>
+            </div>
+          </section>
         </div>
         <div class="rack-visualization-pane">
           <a-card :bordered="false" class="rack-visualization-card">
@@ -194,11 +190,11 @@
 
 <script>
 import { ref, reactive, toRaw } from 'vue'
+import { RightOutlined } from '@ant-design/icons-vue'
 import { getAPI, postAPI } from '@/api'
 import router from '@/router'
 
 import Breadcrumb from '@/components/widgets/Breadcrumb'
-import ChartCard from '@/components/widgets/ChartCard'
 import TooltipLabel from '@/components/widgets/TooltipLabel'
 import RackDiagramTab from '@/views/infra/zone/RackDiagramTab.vue'
 
@@ -206,7 +202,7 @@ export default {
   name: 'InfraSummary',
   components: {
     Breadcrumb,
-    ChartCard,
+    RightOutlined,
     TooltipLabel,
     RackDiagramTab
   },
@@ -238,9 +234,6 @@ export default {
     this.fetchData()
   },
   computed: {
-    isDarkMode () {
-      return !!this.$store.getters.darkMode
-    },
     visibleSummaryGroups () {
       return this.summaryGroups
         .map(group => {
@@ -416,12 +409,11 @@ export default {
     max-width: 34%;
     flex: 0 0 34%;
     max-height: 5000px;
-    padding: 10px;
+    padding: 16px;
     overflow: hidden;
+    background: var(--ui-bg-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 12px;
-    border: 1px solid #dfe3e8;
-    background: linear-gradient(180deg, #f8f9fb 0%, #f3f5f8 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
     transition:
       width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
       max-width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
@@ -450,70 +442,102 @@ export default {
     transform: translateX(-16px);
     transition-delay: 0s, 0s, 0s, 0s, 0s, 0s, 0s, 0.28s;
   }
-  .summary-group {
-    padding: 10px 10px 0;
-    border: 1px solid rgba(31, 41, 55, 0.08);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.54);
-  }
   .summary-group + .summary-group {
-    margin-top: 12px;
-  }
-  .summary-group-header {
-    display: flex;
-    align-items: center;
-    margin: -2px 2px 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(31, 41, 55, 0.06);
-    color: #111827;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 18px;
+    margin-top: 18px;
   }
   .summary-group-title {
-    position: relative;
-    padding-left: 9px;
+    margin: 0 2px 8px;
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
   }
-  .summary-group-title::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 4px;
-    width: 3px;
-    height: 11px;
-    border-radius: 2px;
-    background: #c7d2df;
+  .summary-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 8px;
   }
-  .infra-summary-root.is-dark {
-    .summary-cards-pane {
-      border-color: #334155;
-      background: linear-gradient(180deg, #17202b 0%, #131b24 100%);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  .summary-tile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 60px;
+    padding: 10px 10px 10px 12px;
+    color: var(--ui-text-primary);
+    background: var(--ui-bg-page);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background: var(--ui-bg-hover);
+      border-color: var(--ui-border);
+
+      .summary-tile__arrow {
+        opacity: 1;
+      }
     }
-    .summary-group {
-      border-color: rgba(148, 163, 184, 0.18);
-      background: rgba(15, 23, 42, 0.46);
+
+    &:focus-visible {
+      outline: 2px solid var(--ui-focus);
+      outline-offset: 1px;
     }
-    .summary-group-header {
-      border-bottom-color: rgba(148, 163, 184, 0.18);
-      color: rgba(255, 255, 255, 0.88);
+  }
+  .summary-tile__icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--ui-info-icon);
+    font-size: 16px;
+    background: var(--ui-info-bg);
+    border-radius: 8px;
+  }
+  .summary-tile__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .summary-tile__label {
+    overflow: hidden;
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    line-height: 18px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .summary-tile__value {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 26px;
+    font-variant-numeric: tabular-nums;
+
+    &.is-loading {
+      width: 28px;
+      height: 16px;
+      margin: 5px 0;
+      background: var(--ui-border);
+      border-radius: 4px;
     }
-    .summary-group-title::before {
-      background: #4f8df7;
+  }
+  .summary-tile__arrow {
+    flex: none;
+    color: var(--ui-text-placeholder);
+    font-size: 11px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .summary-tile.is-alert {
+    .summary-tile__icon {
+      color: var(--ui-warning-icon);
+      background: var(--ui-warning-bg);
     }
-    .rack-visualization-card {
-      border-color: #334155;
-      background: #151b24;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.24);
-    }
-    .rack-visualization-card :deep(.ant-card-head) {
-      background: #1f2732;
-      border-bottom-color: #334155;
-      color: rgba(255, 255, 255, 0.88);
-    }
-    .rack-visualization-card :deep(.ant-card-body) {
-      padding: 4px;
-      background: #151b24;
+    .summary-tile__value {
+      color: var(--ui-warning-icon);
     }
   }
   .rack-visualization-pane {
@@ -529,44 +553,21 @@ export default {
     flex: 1 1 100%;
     min-width: 0;
   }
-  .chart-card-inner {
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  .summary-mini-card :deep(.ant-card-body) {
-    padding: 12px 14px 6px !important;
-  }
-  .summary-mini-card :deep(.chart-card-content) {
-    margin-top: -28px;
-    margin-bottom: 4px;
-  }
-  .summary-mini-card :deep(.chart-card-total) {
-    margin-top: 2px;
-    font-size: 22px;
-    line-height: 26px;
-    height: 26px;
-  }
-  .summary-mini-card .chart-card-inner h2 {
-    margin: 0;
-    line-height: 1.2;
-  }
-  .summary-mini-card .chart-card-inner h2:first-child {
-    font-size: 20px;
-  }
-  .summary-mini-card .chart-card-inner h2:last-child {
-    margin-top: 4px;
-    font-size: 28px;
-  }
-  .rack-visualization-card :deep(.ant-card-body) {
-    padding: 10px 12px 12px;
-    background: #f6f8fb;
-    border-radius: 10px;
-  }
   .rack-visualization-card {
-    border: 1px solid #dfe3e8;
+    background: var(--ui-bg-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+
+    :deep(.ant-card-head) {
+      color: var(--ui-text-primary);
+      background: transparent;
+      border-bottom-color: var(--ui-border);
+    }
+
+    :deep(.ant-card-body) {
+      padding: 12px;
+      background: transparent;
+    }
   }
   @media (max-width: 1200px) {
     .infra-summary-layout {

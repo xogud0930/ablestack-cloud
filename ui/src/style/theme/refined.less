@@ -425,24 +425,16 @@ html.theme-refined body {
     box-shadow: @refined-card-shadow;
   }
 
-  .ant-card .ant-card-bordered,
-  .summary-cards-pane .summary-group {
+  .ant-card .ant-card-bordered {
     background: transparent;
     border: 1px solid var(--ui-border);
     border-radius: 12px;
     box-shadow: none;
   }
 
-  // summary tiles sit on the outlined group as filled tiles, like the dashboard
-  .summary-cards-pane .summary-group .summary-mini-card {
+  // infra summary tiles are filled tiles, like the dashboard
+  .summary-cards-pane .summary-tile {
     background: var(--refined-tile);
-    border: 0;
-    border-radius: 12px;
-    box-shadow: none;
-  }
-
-  .summary-cards-pane .summary-group .summary-mini-card .ant-card-body {
-    background: transparent;
   }
 
   // a table inside a card is an inner list: no frame of its own, rows separated by lines
@@ -1127,27 +1119,6 @@ html.theme-refined.dark-mode body {
   .ant-table-tbody > tr.ant-table-row:hover > td,
   .ant-table-tbody > tr > td.ant-table-cell-row-hover {
     background: #262628 !important;
-  }
-
-  // infra summary paints its own navy dark theme (.is-dark) with high specificity
-  .infra-summary-root.is-dark {
-    .summary-cards-pane,
-    .rack-visualization-card {
-      background: var(--ui-bg-surface) !important;
-      border: 0 !important;
-      box-shadow: none !important;
-    }
-
-    .summary-group {
-      background: transparent !important;
-      border-color: var(--ui-border) !important;
-    }
-
-    .summary-group-header,
-    .rack-visualization-card .ant-card-head {
-      background: transparent !important;
-      border-bottom-color: var(--ui-border) !important;
-    }
   }
 
   // the action list inside both panels is painted #1f1f1f / slate, which showed as an inner box

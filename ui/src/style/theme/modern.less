@@ -976,6 +976,36 @@ html body {
   .deploy-vm-form-scroll .ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description {
     padding-bottom: 28px;
   }
+
+  // infra summary rack card: the toolbar is the card's own row, not a box in a box, and the list
+  // sits on the card instead of its navy dark panel (doubled class: outranks .rack-diagram-root.is-dark)
+  .infra-summary-root .rack-diagram-root.rack-diagram-root {
+    .toolbar-container {
+      margin-bottom: 12px;
+      padding: 0 0 12px !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-bottom: 1px solid var(--ui-border) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .rack-list-view {
+      background: transparent;
+    }
+
+    .rack-list-add-card {
+      color: var(--ui-text-primary);
+      background: transparent;
+      border-color: var(--ui-border-strong);
+
+      &:hover {
+        color: var(--ui-link);
+        background: var(--ui-bg-selected);
+        border-color: var(--ui-focus);
+      }
+    }
+  }
 }
 
 // dark mode: the light-mode 10% primary tint is too faint on dark surfaces
