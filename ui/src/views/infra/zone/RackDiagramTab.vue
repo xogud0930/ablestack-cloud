@@ -6870,23 +6870,23 @@ onBeforeUnmount(() => {
 
 /* dark mode in this project is attached on body */
 .rack-diagram-root.is-dark .toolbar-container {
-  background: #22282f !important;
-  border-color: #3e444c !important;
+  background: var(--ui-bg-surface) !important;
+  border-color: var(--ui-border) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
 }
 
 .rack-diagram-root.is-dark .toolbar-divider {
-  background-color: #4a515a !important;
+  background-color: var(--ui-border-strong) !important;
 }
 
 .rack-diagram-root.is-dark .toolbar-expand-divider {
-  background: #4a515a;
+  background: var(--ui-border-strong);
 }
 
 .rack-diagram-root.is-dark .toolbar-expand-btn {
   color: rgba(255, 255, 255, 0.72);
-  border-color: #4a515a;
-  background: #22282f;
+  border-color: var(--ui-border-strong);
+  background: var(--ui-bg-surface);
 }
 
 .rack-diagram-root.is-dark .toolbar-expand-btn:hover,
@@ -6897,7 +6897,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .toolbar-zoom {
-  border-left-color: #4a515a;
+  border-left-color: var(--ui-border-strong);
 }
 
 .rack-diagram-root.is-dark .rack-canvas {
@@ -6913,7 +6913,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-side-pane-card :deep(.ant-card-head) {
-  background: #1f2732;
+  background: var(--ui-bg-surface);
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -6922,13 +6922,13 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-side-pane-card {
-  background: #1f2732;
-  border-color: #3a4654;
+  background: var(--ui-bg-surface);
+  border-color: var(--ui-border);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .rack-diagram-root.is-dark .rack-side-pane-card :deep(.ant-card-body) {
-  background: #151b24;
+  background: var(--ui-bg-page);
 }
 
 .rack-diagram-root.is-dark .rack-side-pane {
@@ -6942,7 +6942,7 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .device-memo-table,
 .rack-diagram-root.is-dark .device-free-memo-read,
 .rack-diagram-root.is-dark .device-linked-asset-card {
-  background: #202938;
+  background: var(--ui-bg-surface);
   border-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -6982,7 +6982,7 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-content-holder),
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-content),
 .rack-diagram-root.is-dark .device-info-tabs :deep(.ant-tabs-tabpane) {
-  background: #151b24;
+  background: var(--ui-bg-page);
 }
 
 .rack-diagram-root.is-dark .rack-side-pane :deep(.ant-input),
@@ -6990,8 +6990,8 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .rack-side-pane :deep(.ant-select-selector),
 .rack-diagram-root.is-dark .rack-side-pane :deep(.ant-picker),
 .rack-diagram-root.is-dark .rack-side-pane :deep(textarea.ant-input) {
-  background: #17202b !important;
-  border-color: #465366 !important;
+  background: var(--ui-bg-page) !important;
+  border-color: var(--ui-border-strong) !important;
   color: rgba(255, 255, 255, 0.86) !important;
 }
 
@@ -7016,7 +7016,7 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .device-memo-table-head,
 .rack-diagram-root.is-dark .device-inline-row > label,
 .rack-diagram-root.is-dark .device-info-table-row > div:first-child {
-  background: #253144;
+  background: var(--ui-bg-surface);
   color: rgba(255, 255, 255, 0.78);
 }
 
@@ -7029,8 +7029,8 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .device-spec-unit {
-  background: #263244;
-  border-color: #465366;
+  background: var(--ui-bg-hover);
+  border-color: var(--ui-border-strong);
   color: rgba(255, 255, 255, 0.72);
 }
 
@@ -7040,9 +7040,9 @@ onBeforeUnmount(() => {
 
 .rack-diagram-root.is-dark .device-summary-badge,
 .rack-diagram-root.is-dark .tag-badge {
-  background: #2b3544;
+  background: var(--ui-bg-hover);
   color: rgba(255, 255, 255, 0.78);
-  border-color: #465366;
+  border-color: var(--ui-border-strong);
 }
 
 .rack-diagram-root.is-dark .device-memo-table-head > div,
@@ -7089,18 +7089,18 @@ onBeforeUnmount(() => {
 
 .rack-diagram-root.is-dark .device-info-close-btn:hover {
   color: rgba(255, 255, 255, 0.92) !important;
-  background: #273244 !important;
+  background: var(--ui-bg-hover) !important;
 }
 
 .rack-diagram-root.is-dark .rack-wrapper {
-  background: #1f2732;
-  border-color: #3a4654;
+  background: var(--ui-bg-surface);
+  border-color: var(--ui-border);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.26);
 }
 
 .rack-diagram-root.is-dark .rack-header {
-  background: #202938;
-  border-color: #3a4654;
+  background: var(--ui-bg-surface);
+  border-color: var(--ui-border);
   border-bottom-color: #4c93ff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
@@ -7119,12 +7119,12 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-header-action-separator {
-  background: #3a4654;
+  background: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .rack-header-action-btn {
-  background: #1b2430;
-  border-color: #465366;
+  background: var(--ui-bg-page);
+  border-color: var(--ui-border-strong);
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -7134,13 +7134,13 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-body {
-  background: #1b2430;
-  border-color: #3a4654;
+  background: var(--ui-bg-page);
+  border-color: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .rack-ruler {
-  background: #202938;
-  border-right-color: #3a4654;
+  background: var(--ui-bg-surface);
+  border-right-color: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .ruler-number {
@@ -7159,17 +7159,17 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .rack-frame {
-  background: #17202b !important;
-  border-color: #3a4654 !important;
+  background: var(--ui-bg-page) !important;
+  border-color: var(--ui-border) !important;
 }
 
 .rack-diagram-root.is-dark .rack-item {
-  background: #17202b;
-  border-bottom-color: #334155;
+  background: var(--ui-bg-page);
+  border-bottom-color: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .rack-item::after {
-  background: #334155;
+  background: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .rack-item:not(.rack-item-selected) {
@@ -7188,7 +7188,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .device-content {
-  background: linear-gradient(90deg, #202938 0, #202938 74px, #17202b 74px, #17202b 100%) !important;
+  background: linear-gradient(90deg, var(--ui-bg-surface) 0, var(--ui-bg-surface) 74px, var(--ui-bg-page) 74px, var(--ui-bg-page) 100%) !important;
 }
 
 .rack-diagram-root.is-dark .device-content-selected,
@@ -7199,22 +7199,22 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .gap-content {
   background: repeating-linear-gradient(
     45deg,
-    #17202b,
-    #17202b 10px,
-    #1f2a38 10px,
-    #1f2a38 20px
+    var(--ui-bg-page),
+    var(--ui-bg-page) 10px,
+    var(--ui-bg-surface) 10px,
+    var(--ui-bg-surface) 20px
   ) !important;
   color: rgba(255, 255, 255, 0.68);
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.24);
 }
 
 .rack-diagram-root.is-dark .gap-content:hover {
-  background: #202938 !important;
+  background: var(--ui-bg-surface) !important;
   color: #8cc8ff;
 }
 
 .rack-diagram-root.is-dark .pattern-blank {
-  background-image: repeating-linear-gradient(-45deg, #1f2a38 0, #1f2a38 6px, #17202b 6px, #17202b 12px);
+  background-image: repeating-linear-gradient(-45deg, var(--ui-bg-surface) 0, var(--ui-bg-surface) 6px, var(--ui-bg-page) 6px, var(--ui-bg-page) 12px);
 }
 
 .rack-diagram-root.is-dark .device-top-line {
@@ -7226,8 +7226,8 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .device-pattern :deep(.panel-shell) {
-  fill: #263241;
-  stroke: #4a5a6d;
+  fill: var(--ui-bg-hover);
+  stroke: var(--ui-border-strong);
 }
 
 .rack-diagram-root.is-dark .device-pattern :deep(.detail-fill),
@@ -7240,7 +7240,7 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .device-pattern :deep(.detail-soft) {
-  fill: #334155;
+  fill: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .device-pattern :deep(.thin),
@@ -7260,7 +7260,7 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .device-pattern :deep(.outlet-shell),
 .rack-diagram-root.is-dark .device-pattern :deep(.plug-shell),
 .rack-diagram-root.is-dark .device-pattern :deep(.outlet) {
-  fill: #202938;
+  fill: var(--ui-bg-surface);
   stroke: #8b9bb0;
 }
 
@@ -7398,8 +7398,8 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .host-vm-card {
-  background: #1f2732;
-  border-color: #3a4654;
+  background: var(--ui-bg-surface);
+  border-color: var(--ui-border);
 }
 
 .rack-diagram-root.is-dark .host-vm-name {
@@ -7420,8 +7420,8 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-input-search .ant-input),
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-input-group-addon),
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-slider-rail) {
-  background: #1a212b !important;
-  border-color: #4a515a !important;
+  background: var(--ui-bg-page) !important;
+  border-color: var(--ui-border-strong) !important;
   color: rgba(255, 255, 255, 0.85) !important;
 }
 
@@ -7446,8 +7446,8 @@ onBeforeUnmount(() => {
 }
 
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-space-item .ant-btn) {
-  background: #1a212b !important;
-  border-color: #4a515a !important;
+  background: var(--ui-bg-page) !important;
+  border-color: var(--ui-border-strong) !important;
   color: rgba(255, 255, 255, 0.88) !important;
 }
 
@@ -7477,8 +7477,8 @@ onBeforeUnmount(() => {
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-space-item .ant-btn-primary.ant-btn-disabled),
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-space-item .ant-btn-primary[disabled]:hover),
 .rack-diagram-root.is-dark .toolbar-container :deep(.ant-space-item .ant-btn-primary.ant-btn-disabled:hover) {
-  background: #2a3038 !important;
-  border-color: #434a54 !important;
+  background: var(--ui-bg-hover) !important;
+  border-color: var(--ui-border-strong) !important;
   color: rgba(255, 255, 255, 0.35) !important;
   box-shadow: none !important;
 }
